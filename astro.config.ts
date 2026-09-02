@@ -21,6 +21,8 @@ import config from "./astro-paper.config";
 
 export default defineConfig({
   site: config.site.url,
+  base: "/Astro",
+
   integrations: [
     mdx(),
     sitemap({
@@ -28,13 +30,15 @@ export default defineConfig({
         config.features?.showArchives !== false || !page.endsWith("/archives/"),
     }),
   ],
+
   i18n: {
-    locales: ["en"],
-    defaultLocale: "en",
+    locales: ["ko"],
+    defaultLocale: "ko",
     routing: {
       prefixDefaultLocale: false,
     },
   },
+
   markdown: {
     processor: unified({
       remarkPlugins: [
@@ -43,6 +47,7 @@ export default defineConfig({
       ],
       rehypePlugins: [rehypeCallouts],
     }),
+
     shikiConfig: {
       themes: { light: "min-light", dark: "night-owl" },
       defaultColor: false,
@@ -55,9 +60,11 @@ export default defineConfig({
       ],
     },
   },
+
   vite: {
     plugins: [tailwindcss()],
   },
+
   fonts: [
     {
       name: "Google Sans Code",
@@ -69,6 +76,7 @@ export default defineConfig({
       formats: ["woff", "ttf"],
     },
   ],
+
   env: {
     schema: {
       PUBLIC_GOOGLE_SITE_VERIFICATION: envField.string({
@@ -78,6 +86,7 @@ export default defineConfig({
       }),
     },
   },
+
   experimental: {
     svgOptimizer: svgoOptimizer(),
   },
