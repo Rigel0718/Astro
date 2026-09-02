@@ -25,6 +25,8 @@ const decodeSegment = (value: string) => {
 };
 
 const navLabels: Record<string, string> = {
+  python: t.nav.python,
+  "understanding-python-objects": "파이썬 객체에 대한 이해",
   posts: t.nav.posts,
   tags: t.nav.tags,
   about: t.nav.about,
@@ -34,7 +36,10 @@ const navLabels: Record<string, string> = {
 
 // if breadcrumb is Home > Posts > [page] <etc>
 // replace Posts with localized "Posts (page number)"
-if (breadcrumbList[0] === "posts") {
+if (
+  breadcrumbList[0] === "posts" &&
+  (breadcrumbList.length === 1 || !isNaN(Number(breadcrumbList[1])))
+) {
   breadcrumbList.splice(
     0,
     2,
@@ -82,7 +87,10 @@ if (breadcrumbList[0] === "tags" && !isNaN(Number(breadcrumbList[2]))) {
         ) : (
           <li class="flex items-center gap-x-1">
             <a
-              href={getRelativeLocaleUrl(locale, breadcrumb)}
+              href={getRelativeLocaleUrl(
+                locale,
+                breadcrumbList.slice(0, index + 1).join("/")
+              )}
               class="capitalize opacity-70"
             >
               {navLabels[breadcrumb] ?? decodeSegment(breadcrumb)}

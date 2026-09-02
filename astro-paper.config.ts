@@ -37,4 +37,3 @@ export default defineAstroPaperConfig({
     { name: "mail", url: "mailto:?subject=See%20this%20post&body=" },
   ],
 });
-

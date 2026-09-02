@@ -32,6 +32,9 @@ const isActive = (path: string) => {
   const pathArray = path.split("/").filter(p => p.trim());
   return currentPath === path || currentPathArray[0] === pathArray[0];
 };
+
+const isPythonPath =
+  currentPath === "/posts/python" || currentPath.startsWith("/posts/python/");
 ---
 
 <a
@@ -76,8 +79,16 @@ const isActive = (path: string) => {
       >
         <li class="col-span-2">
           <a
+            href={getRelativeLocaleUrl(locale, "posts/python")}
+            class:list={{ "active-nav": isPythonPath }}
+          >
+            {t.nav.python}
+          </a>
+        </li>
+        <li class="col-span-2">
+          <a
             href={getRelativeLocaleUrl(locale, "posts")}
-            class:list={{ "active-nav": isActive("/posts") }}
+            class:list={{ "active-nav": isActive("/posts") && !isPythonPath }}
           >
             {t.nav.posts}
           </a>

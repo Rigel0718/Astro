@@ -44,7 +44,7 @@
 
 `postFilter()`는 draft를 항상 제외하고, production에서는 예약 시간이 지나지 않은 글도 제외한다. development에서는 작성 편의를 위해 draft가 아닌 예약 글을 표시한다. `getSortedPosts()`는 이 필터를 적용한 뒤 `modDatetime` 우선, 없으면 `pubDatetime` 기준 최신순으로 정렬한다. tag 목록과 archive도 같은 필터 계열을 사용한다.
 
-현재 콘텐츠는 AstroPaper 사용법·release·example 중심의 초기 글 18개(그중 draft 예제 1개)이며, 홈과 About 내용도 아직 AstroPaper 기본 소개 성격이 강하다.
+AstroPaper에 포함되어 있던 예제 게시물은 제거된 상태다. 새 글은 `src/content/posts/`에 Markdown 또는 MDX 파일로 추가하며, About 콘텐츠는 `src/content/pages/about.md`에서 관리한다.
 
 ## Routing과 layout
 
@@ -53,6 +53,8 @@
 - `/`: featured 글과 최근 글을 보여 주는 홈.
 - `/posts`, `/posts/2`, ...: `config.posts.perPage` 단위의 전체 글 목록.
 - `/posts/<slug>`: Markdown/MDX 본문, 날짜, tag, 공유 링크, 인접 글 navigation, 읽기 진행률, heading anchor, code copy, 이미지 lightbox를 제공하는 상세 페이지.
+- `/posts/python`: Python 주제별 시리즈를 소개하는 허브. Header의 `Python` 항목에서 진입한다.
+- `/posts/python/understanding-python-objects`: `파이썬 객체에 대한 이해` 시리즈의 8개 에피소드 목차와 게시 진행률을 보여 준다. `src/content/posts/python/understanding-python-objects/`의 게시물을 파일명 순서로 자동 수집한다.
 - `/tags`와 `/tags/<tag>`: tag 색인 및 tag별 pagination.
 - `/archives`: 연도·월별 archive. feature가 꺼지면 404로 rewrite된다.
 - `/search`: Pagefind UI. search feature가 꺼지면 404로 rewrite된다.
@@ -73,6 +75,10 @@
 - canonical과 절대 social URL은 `Astro.site`, `Astro.url`, Content frontmatter의 `canonicalURL`을 조합한다.
 
 새 링크나 asset 경로도 이 기존 utility 또는 Astro URL API를 재사용해야 한다.
+
+### Python 시리즈 작성 위치
+
+`파이썬 객체에 대한 이해`의 에피소드는 `src/content/posts/python/understanding-python-objects/`에 `01-주제.md`, `02-주제.md`처럼 두 자리 번호로 시작하는 Markdown 파일을 추가한다. 이 파일명 순서가 시리즈 목차 순서가 되며, 실제 글 URL은 `/posts/python/understanding-python-objects/<파일명-slug>` 형태다. `_episode-template.md`는 Content Collection에서 제외되는 작성용 템플릿이므로 복사한 뒤 `_`로 시작하지 않는 파일명으로 바꾸어 사용한다.
 
 ## Build와 deployment
 
