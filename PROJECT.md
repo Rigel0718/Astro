@@ -51,7 +51,7 @@ AstroPaper에 포함되어 있던 예제 게시물은 제거된 상태다. 새 �
 주요 정적 route는 다음 책임으로 나뉜다.
 
 - `/`: featured 글과 최근 글을 보여 주는 홈.
-- `/posts`, `/posts/2`, ...: `config.posts.perPage` 단위의 최상위 글 목록. Python 하위 게시물은 제외하고 첫 페이지에 Python 허브 진입 항목을 표시한다.
+- `/posts`: 주제별 게시물 허브 목록. 현재는 Python 허브 진입 항목만 표시하며, Python 하위 게시물은 이 페이지에 직접 표시하지 않는다.
 - `/posts/<slug>`: Markdown/MDX 본문, 날짜, tag, 공유 링크, 인접 글 navigation, 읽기 진행률, heading anchor, code copy, 이미지 lightbox를 제공하는 상세 페이지.
 - `/posts/python`: Python 주제별 시리즈를 소개하는 허브. Header의 `Posts` 하위 `Python` 항목에서 진입한다.
 - `/posts/python/understanding-python-objects`: `파이썬 객체에 대한 이해` 시리즈의 8개 에피소드 목차와 게시 진행률을 보여 준다. `src/content/posts/python/understanding-python-objects/`의 게시물을 파일명 순서로 자동 수집한다.
