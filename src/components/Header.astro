@@ -77,21 +77,28 @@ const isPythonPath =
         id="menu-items"
         class="[&>li>a]:hover:text-accent mt-4 hidden w-44 grid-cols-2 place-content-center gap-2 sm:mt-0 sm:flex sm:w-auto sm:gap-x-5 sm:gap-y-0 sm:[&>li]:h-8 [&>li>a]:block [&>li>a]:px-4 [&>li>a]:py-3 [&>li>a]:text-center [&>li>a]:font-medium sm:[&>li>a]:px-2 sm:[&>li>a]:py-1"
       >
-        <li class="col-span-2">
-          <a
-            href={getRelativeLocaleUrl(locale, "posts/python")}
-            class:list={{ "active-nav": isPythonPath }}
-          >
-            {t.nav.python}
-          </a>
-        </li>
-        <li class="col-span-2">
+        <li class="group relative col-span-2">
           <a
             href={getRelativeLocaleUrl(locale, "posts")}
-            class:list={{ "active-nav": isActive("/posts") && !isPythonPath }}
+            class:list={{ "active-nav": isActive("/posts") }}
           >
             {t.nav.posts}
           </a>
+          <ul
+            class="border-border bg-background sm:invisible sm:absolute sm:top-full sm:left-1/2 sm:z-10 sm:w-max sm:-translate-x-1/2 sm:rounded-sm sm:border sm:p-1 sm:opacity-0 sm:shadow-md sm:transition-opacity sm:group-focus-within:visible sm:group-focus-within:opacity-100 sm:group-hover:visible sm:group-hover:opacity-100"
+          >
+            <li>
+              <a
+                href={getRelativeLocaleUrl(locale, "posts/python")}
+                class:list={[
+                  "hover:text-accent block px-4 py-2 text-center text-sm font-medium",
+                  { "text-accent": isPythonPath },
+                ]}
+              >
+                {t.nav.python}
+              </a>
+            </li>
+          </ul>
         </li>
         <li class="col-span-2">
           <a
