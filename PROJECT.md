@@ -85,7 +85,7 @@ AstroPaper에 포함되어 있던 예제 게시물은 제거된 상태다. 새 �
 필수 Node 버전은 22.12.0 이상이다. 주요 명령은 다음과 같다.
 
 - `npm run dev`: Astro development server.
-- `npm run build`: `astro check` → `astro build` → `pagefind --site dist` → 생성된 `dist/pagefind`를 `public/pagefind/`에 복사.
+- `npm run build`: 오래된 Content Layer cache를 제거하는 `astro sync --force` → `astro check` → `astro build` → `pagefind --site dist` → 생성된 `dist/pagefind`를 `public/pagefind/`에 복사.
 - `npm run preview`: production build preview.
 - `npm run lint`, `npm run format:check`: 정적 검사와 formatting 검사.
 
