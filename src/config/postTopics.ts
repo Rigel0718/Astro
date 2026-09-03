@@ -13,6 +13,16 @@ export const POST_TOPICS = {
           "파이썬 객체의 핵심 개념을 순서대로 살펴보는 8개 에피소드 시리즈입니다.",
         episodeCount: 8,
       },
+
+      understandingPythonExecution: {
+        slug: "understanding-python-execution",
+        title: "파이썬 실행에 대한 이해",
+        description:
+          "Python 코드는 어떤 과정을 거쳐 실제로 실행될까?\nSource Code가 AST와 Bytecode로 변환되는 과정부터 Interpreter, Frame, 함수 호출, Iterator, Coroutine, Event Loop, Thread와 GIL까지 차근차근 살펴봅니다.",
+        metaDescription:
+          "파이썬 코드가 읽히고 실행되는 과정을 순서대로 살펴보는 11개 에피소드 시리즈입니다.",
+        episodeCount: 11,
+      },
     },
   },
 } as const;
