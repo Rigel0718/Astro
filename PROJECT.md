@@ -42,7 +42,7 @@
 
 게시물 디렉터리의 하위 폴더는 URL 경로가 될 수 있지만, 이름이 `_`로 시작하는 폴더 segment는 URL에서 제외된다. 예를 들어 `_releases/astro-paper-6.md`는 `/posts/astro-paper-6` 형태가 된다. `getPostPaths.ts`가 이 규칙과 locale/base 적용을 한곳에서 처리한다.
 
-`postFilter()`는 draft를 항상 제외하고, production에서는 예약 시간이 지나지 않은 글도 제외한다. development에서는 작성 편의를 위해 draft가 아닌 예약 글을 표시한다. `getSortedPosts()`는 이 필터를 적용한 뒤 `modDatetime` 우선, 없으면 `pubDatetime` 기준 최신순으로 정렬한다. tag 목록과 archive도 같은 필터 계열을 사용한다.
+`postFilter()`는 draft를 항상 제외하고, production에서는 예약 시간이 지나지 않은 글도 제외한다. development에서는 작성 편의를 위해 draft가 아닌 예약 글을 표시한다. `getSortedPosts()`는 이 필터를 적용한 뒤 `modDatetime` 우선, 없으면 `pubDatetime` 기준 최신순으로 정렬한다. tag 목록과 archive도 같은 필터 계열을 사용한다. Python 주제와 그 아래 시리즈의 제목, 설명, slug, 전체 에피소드 수는 `src/config/postTopics.ts`에서 함께 관리한다.
 
 AstroPaper에 포함되어 있던 예제 게시물은 제거된 상태다. 새 글은 `src/content/posts/`에 Markdown 또는 MDX 파일로 추가하며, About 콘텐츠는 `src/content/pages/about.md`에서 관리한다.
 
