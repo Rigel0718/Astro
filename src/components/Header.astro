@@ -11,6 +11,7 @@ import LinkButton from "./LinkButton.astro";
 import { stripBase, stripLocale } from "@/utils/withBase";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
+import { POST_TOPICS } from "@/config/postTopics";
 
 const { site, features } = config;
 
@@ -33,8 +34,12 @@ const isActive = (path: string) => {
   return currentPath === path || currentPathArray[0] === pathArray[0];
 };
 
-const isPythonPath =
-  currentPath === "/posts/python" || currentPath.startsWith("/posts/python/");
+const postTopics = Object.values(POST_TOPICS);
+
+const isTopicPath = (slug: string) => {
+  const topicPath = `/posts/${slug}`;
+  return currentPath === topicPath || currentPath.startsWith(`${topicPath}/`);
+};
 ---
 
 <a
@@ -87,17 +92,21 @@ const isPythonPath =
           <ul
             class="border-border bg-background sm:invisible sm:absolute sm:top-full sm:left-1/2 sm:z-10 sm:w-max sm:-translate-x-1/2 sm:rounded-sm sm:border sm:p-1 sm:opacity-0 sm:shadow-md sm:transition-opacity sm:group-focus-within:visible sm:group-focus-within:opacity-100 sm:group-hover:visible sm:group-hover:opacity-100"
           >
-            <li>
-              <a
-                href={getRelativeLocaleUrl(locale, "posts/python")}
-                class:list={[
-                  "hover:text-accent block px-4 py-2 text-center text-sm font-medium",
-                  { "text-accent": isPythonPath },
-                ]}
-              >
-                {t.nav.python}
-              </a>
-            </li>
+            {
+              postTopics.map(topic => (
+                <li>
+                  <a
+                    href={getRelativeLocaleUrl(locale, `posts/${topic.slug}`)}
+                    class:list={[
+                      "hover:text-accent block px-4 py-2 text-center text-sm font-medium",
+                      { "text-accent": isTopicPath(topic.slug) },
+                    ]}
+                  >
+                    {topic.title}
+                  </a>
+                </li>
+              ))
+            }
           </ul>
         </li>
         <li class="col-span-2">
