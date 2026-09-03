@@ -19,7 +19,7 @@
 
 ## 설정 구조
 
-`astro-paper.config.ts`가 사이트 수준의 주 설정 파일이다. 사이트 URL·제목·설명·작성자·언어·시간대, 페이지당 글 수, 예약 게시 여유 시간, theme/search/archive/동적 OG/edit-link 기능, 소셜 및 공유 링크를 선언한다. `src/types/config.ts`가 이 공개 설정의 타입을 정의하고, `src/config.ts`가 기본값과 `PUBLIC_GOOGLE_SITE_VERIFICATION` 환경값을 합쳐 내부에서 사용하는 완전한 설정을 만든다. AstroPaper 관련 설정은 가능한 한 이 흐름을 통해 변경한다.
+`astro-paper.config.ts`가 사이트 수준의 주 설정 파일이다. 사이트 URL·제목·설명·작성자·언어·시간대, 페이지당 글 수, 예약 게시 여유 시간, theme/search/archive/동적 OG/edit-link 기능, 소셜 및 공유 링크를 선언한다. `src/types/config.ts`가 이 공개 설정의 타입을 정의하고, `src/config.ts`가 기본값과 `PUBLIC_GOOGLE_SITE_VERIFICATION` 환경값을 합쳐 내부에서 사용하는 완전한 설정을 만든다. AstroPaper 관련 설정은 가능한 한 이 흐름을 통해 변경한다. 게시물 주제 허브의 표시 메타데이터는 `src/config/postTopics.ts`에서 관리하며, 상위 `/posts` 목록과 각 주제 허브가 같은 값을 사용한다.
 
 현재 주요 값은 다음과 같다.
 
