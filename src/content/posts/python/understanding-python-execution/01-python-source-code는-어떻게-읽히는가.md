@@ -9,7 +9,6 @@ tags:
   - AST
 draft: false
 ---
-# 01 Python Source Code는 어떻게 읽히는가
 
 우리는 Python 코드를 다음과 같이 작성한다.
 
