@@ -1,6 +1,6 @@
 ---
 title: "01. Python Source Code는 어떻게 읽히는가"
-description: "Python Source Code가 Tokenization과 Parsing을 거쳐 AST로 변환되는 과정을 살펴보고, Token, Lexer, Parser, Grammar, AST가 각각 어떤 역할을 하는지 이해합니다."
+description: "Python Source Code가 Tokenization과 Parsing을 거쳐 AST로 변환되는 과정을 살펴보고, Token, Parser, Grammar, AST가 각각 어떤 역할을 하는지 이해합니다."
 pubDatetime: 2026-09-04T09:29:00+09:00
 tags:
   - Python
