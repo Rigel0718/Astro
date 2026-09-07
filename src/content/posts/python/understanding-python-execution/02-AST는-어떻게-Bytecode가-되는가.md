@@ -36,7 +36,7 @@ print(x + y)
 
 우리에게는 단순한 세 줄의 코드지만 Python은 이 문자열을 그대로 실행하지 않는다.
 
-먼저 코드를 읽고 문법적인 구조를 파악하여 **AST(Abstract Syntax Tree)**를 만든다.
+먼저 코드를 읽고 문법적인 구조를 파악하여 **AST**(Abstract Syntax Tree)를 만든다.
 
 하지만 AST 역시 CPU가 실행할 수 있는 명령도 아니고, Python Interpreter가 직접 하나씩 실행하는 최종 명령도 아니다.
 
@@ -117,7 +117,7 @@ Bytecode
 
 ## 2. Python에도 Compiler가 있다
 
-Python을 흔히 **인터프리터 언어(Interpreted Language)**라고 부른다.
+Python을 흔히 **인터프리터 언어**(Interpreted Language)라고 부른다.
 
 그래서 Python에는 Compiler가 없다고 생각하기 쉽다.
 
@@ -619,7 +619,7 @@ Code Object 복원
 
 예를 들어 C 프로그램을 컴파일하면 CPU가 실행할 수 있는 Machine Code가 만들어진다.
 
-하지만 Python의 `.pyc`는 그런 <u>Native Executable이 아니다.</u>
+하지만 Python의 `.pyc`는 그런 Native Executable이 아니다.
 
 ```text
 C
@@ -744,7 +744,7 @@ CPU가 직접 실행하는 것은 아니다.
 
 Python에서는 이 명령들을 처리하는 실행 계층이 존재한다.
 
-바로 **Python Virtual Machine(PVM)**이다.
+바로 **Python Virtual Machine**(PVM)이다.
 
 그리고 우리가 흔히 이야기하는 **Python Interpreter**, 특히 CPython이라는 구현체가 이 과정과 연결된다.
 

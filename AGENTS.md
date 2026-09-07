@@ -107,6 +107,12 @@ npm run build
 
 변경으로 인해 build가 실패한다면 작업이 완료된 것으로 간주하지 않는다.
 
+Markdown 콘텐츠만 수정한 경우에는 전체 build를 기본적으로 실행하지 않는다.
+
+대상 파일의 `git diff -- <파일>`와 Markdown 문법 및 포맷을 확인한다.
+
+단, frontmatter, Content Collection schema, Markdown integration 또는 렌더링 동작에 영향을 주는 변경은 `npm run build`로 검증한다.
+
 UI 또는 동작을 변경한 경우 필요하면 development server를 사용해 로컬에서 실제 동작을 확인한다.
 
 작업을 완료하기 전에 diff를 확인하고 변경 범위가 요청된 작업에 한정되어 있는지 확인한다.
