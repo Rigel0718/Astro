@@ -3,7 +3,7 @@ title: "05. Python에서 함수 호출은 내부적으로 어떻게 이루어지
 
 description: "Python의 함수 호출이 Function Object 탐색과 argument binding을 거쳐 새로운 실행 상태를 만들고, Bytecode 실행과 return을 통해 다시 호출자로 돌아가는 과정을 이해합니다."
 
-pubDatetime: 2026-09-08T14:08:00+09:00
+pubDatetime: 2026-09-08T14:10:00+09:00
 
 tags:
   - Python
