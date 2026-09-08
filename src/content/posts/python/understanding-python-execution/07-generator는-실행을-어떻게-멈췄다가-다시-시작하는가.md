@@ -3,7 +3,7 @@ title: "07. Generator는 실행을 어떻게 멈췄다가 다시 시작하는가
 
 description: "Python Generator가 yield를 통해 실행을 중단하고 상태를 보존한 뒤, next() 호출에서 다시 실행을 이어가는 suspend와 resume의 동작 원리를 이해합니다."
 
-pubDatetime: 2026-09-08T15:34:00+09:00
+pubDatetime: 2026-09-08T15:50:00+09:00
 
 tags:
   - Python
