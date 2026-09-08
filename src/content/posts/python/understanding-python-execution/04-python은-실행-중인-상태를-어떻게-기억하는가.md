@@ -1,7 +1,7 @@
 ---
 title: "04. Python은 실행 중인 상태를 어떻게 기억하는가"
 
-description: "Python이 Frame을 통해 실행 중인 상태를 관리하는 방식을 살펴보고, Code Object와 Frame의 차이, namespace, Operand Stack, instruction 위치, 함수 호출과 Call Stack의 관계를 이해합니다."
+description: "Python이 Frame을 통해 실행 중인 상태를 관리하는 방식을 살펴보고, Code Object와 Frame의 차이, namespace, Operand Stack, instruction을 이해합니다."
 
 pubDatetime: 2026-09-08T14:08:00+09:00
 
