@@ -222,14 +222,14 @@ Code Object
 Coroutine은 이러한 실행 상태와 연결되어 있기 때문에 중간에 실행이 멈추더라도 처음부터 다시 실행할 필요가 없다.
 
 ```text
-실행
- ↓
-suspend
- ↓
+   실행
+    ↓
+ suspend
+    ↓
 실행 상태 유지
- ↓
-resume
- ↓
+    ↓
+  resume
+    ↓
 이어서 실행
 ```
 
@@ -655,7 +655,7 @@ Generator Object
        ↓
 for / next()
        ↓
-실행
+      실행
 
 
 Coroutine Function
@@ -664,7 +664,7 @@ Coroutine Object
        ↓
 비동기 실행 시스템
        ↓
-실행
+      실행
 ```
 
 Generator에서 `for`와 `next()`가 실행을 진행시켰던 것처럼, Coroutine도 실제 실행을 진행하고 관리하는 외부 구조가 필요하다.
