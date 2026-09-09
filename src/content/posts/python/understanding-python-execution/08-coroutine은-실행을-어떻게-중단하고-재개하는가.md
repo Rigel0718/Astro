@@ -16,64 +16,54 @@ tags:
 draft: false
 ---
 
-앞선 글에서는 Generator가 `yield`를 만나면 실행을 멈추고, 이후 다시 그 지점부터 실행을 이어갈 수 있다는 것을 살펴봤다.
+앞선 글에서는 Generator가 `yield`에서 실행을 중단하고, 이후 `next()`를 통해 다시 실행을 이어갈 수 있다는 것을 살펴봤다.
 
-```python
-def gen():
-    print("A")
-    yield
-    print("B")
-```
+Coroutine도 이와 비슷하게 **실행을 끝내지 않은 채 중단되고 다시 이어질 수 있는 실행 흐름**을 가진다.
 
-Generator의 중요한 특징은 **함수 실행이 끝나지 않았는데도 중간에 멈출 수 있다는 것**이다.
+다만 Generator가 주로 값을 필요할 때 하나씩 생산하기 위한 구조라면, Coroutine은 주로 **어떤 작업을 기다리는 동안 자신의 실행을 중단할 수 있는 비동기 실행 흐름**을 만드는 데 사용된다.
 
-Coroutine도 이와 비슷하다.
-
-다만 Coroutine은 단순히 값을 하나씩 만들어내기 위한 것이 아니라, **어떤 작업이 끝나기를 기다리는 동안 자신의 실행을 중단하고 다른 작업이 실행될 수 있도록 하기 위해 사용된다.**
-
-이번에는 다음 흐름을 따라가 보자.
+이번 글에서는 다음 흐름을 중심으로 Coroutine 자체의 실행 구조를 살펴본다.
 
 ```text
-async def
-   ↓
 Coroutine Function
-   ↓ 호출
+       ↓ call
 Coroutine Object
-   ↓
- await
-   ↓
-suspend
-   ↓
-Awaitable 완료
-   ↓
-resume
+       ↓
+     실행
+       ↓
+     await
+       ↓
+필요하다면 suspend
+       ↓
+     resume
 ```
+
+Coroutine을 실제 비동기 작업으로 실행하고 여러 Coroutine의 실행을 관리하는 구조에는 `Task`와 `Event Loop`가 사용된다.
+
+이 부분은 다음 글에서 자세히 살펴보고, 이번에는 먼저 **Coroutine이 어떻게 중단되고 다시 이어질 수 있는지**에 집중해보자.
 
 ---
 
-## 1. `async def`를 호출하면 함수가 바로 실행될까?
+## 1. Coroutine Function을 호출하면 Coroutine Object가 만들어진다
 
-일반적인 함수부터 생각해보자.
+일반적인 함수는 호출하면 함수의 실행이 시작된다.
 
 ```python
 def hello():
     print("hello")
 
+
 hello()
 ```
 
-`hello()`를 호출하면 Python은 새로운 Frame을 만들고 함수의 코드를 실행한다.
-
-하지만 `async def`로 정의한 함수는 조금 다르다.
+반면 `async def`로 정의한 함수는 다르게 동작한다.
 
 ```python
 async def hello():
     print("hello")
 ```
 
-이 함수에 `async`가 붙었다고 해서 정의되는 순간 특별한 일이 발생하는 것은 아니다.
-
-중요한 차이는 **호출할 때** 나타난다.
+`hello()`를 호출해보자.
 
 ```python
 coro = hello()
@@ -87,110 +77,169 @@ print(coro)
 <coroutine object hello at ...>
 ```
 
-그리고 아직 `"hello"`는 출력되지 않았다.
+이 시점에는 아직 `"hello"`가 출력되지 않는다.
 
-즉,
-
-```python
-hello()
-```
-
-는 `hello` 함수의 본문을 즉시 실행하는 것이 아니라 **Coroutine Object를 생성한다.**
+`async def`로 정의된 함수는 **Coroutine Function**이고, 이를 호출하면 **Coroutine Object**가 만들어진다.
 
 ```text
-async def hello():
-        │
-        └── Coroutine Function
-
-hello()
-   │
-   └── Coroutine Object
+async def hello()
+       │
+       │ define
+       ▼
+Coroutine Function
+       │
+       │ call
+       ▼
+Coroutine Object
 ```
 
-이 점은 앞에서 살펴본 Generator와 상당히 비슷하다.
+이 구조는 앞에서 살펴본 Generator와 비슷하다.
 
 ```python
 def gen():
     yield 1
 
+
 g = gen()
 ```
 
-Generator Function을 호출하면 Generator Object가 만들어지듯,
+Generator Function을 호출하면 Generator Object가 만들어졌다.
+
+```text
+Generator Function
+       ↓ call
+Generator Object
+```
+
+Coroutine도 마찬가지다.
 
 ```python
 async def coro():
     ...
 
+
 c = coro()
 ```
 
-Coroutine Function을 호출하면 Coroutine Object가 만들어진다.
+```text
+Coroutine Function
+       ↓ call
+Coroutine Object
+```
+
+둘 모두 Function을 호출했을 때 **중단과 재개가 가능한 실행을 표현하는 객체**가 만들어진다는 공통점이 있다.
+
+그리고 객체를 생성했다고 해서 본문이 바로 끝까지 실행되는 것도 아니다.
+
+Generator의 경우 외부에서 `next()`를 호출하거나 `for`문이 반복을 진행시켰다.
+
+```text
+for / next()
+      ↓
+Generator Object
+      ↓
+     실행
+```
+
+Coroutine 역시 Coroutine Object의 실행을 진행시키는 외부의 실행 구조가 필요하다.
+
+```text
+비동기 실행 시스템
+       ↓
+Coroutine Object
+       ↓
+     실행
+```
+
+Python의 `asyncio`에서는 이 과정에 `Task`와 `Event Loop`가 사용된다.
+
+따라서 Coroutine Object는 **실행 가능한 비동기 실행 흐름을 표현하지만, 객체가 만들어지는 것만으로 실행이 진행되는 것은 아니다.**
 
 ---
 
-## 2. 그렇다면 Coroutine Object는 무엇을 가지고 있을까?
+## 2. Coroutine Object는 실행 상태를 유지한다
 
-Coroutine은 실행 도중 멈췄다가 다시 실행될 수 있어야 한다.
-
-그러려면 단순히 실행할 코드만 알고 있어서는 안 된다.
+Coroutine은 실행 도중 멈췄다가 나중에 다시 실행될 수 있다.
 
 예를 들어 다음 Coroutine을 생각해보자.
 
 ```python
 async def work():
     x = 10
-    await something()
+    result = await something()
     print(x)
+    return result
 ```
 
-`await`에서 실행이 중단되었다고 해보자.
-
-나중에 다시 실행할 때 Python은 최소한 다음과 같은 사실을 알고 있어야 한다.
+실행이 `await`에서 중단되었다고 해보자.
 
 ```text
-x = 10이었다
-
-어디까지 실행했는가?
-
-어떤 await를 기다리고 있었는가?
-
-다음에는 어디서부터 실행해야 하는가?
+x = 10
+   ↓
+await something()
+   ↓
+suspend
 ```
 
-즉 Coroutine은 자신의 **실행 상태**(execution state)를 보존할 수 있어야 한다.
+이때 `work()`의 실행은 끝난 것이 아니다.
 
-이 구조는 앞에서 살펴본 Frame과 Generator의 이야기와 연결된다.
+나중에는 중단되었던 지점부터 다시 실행되어야 한다.
+
+```text
+resume
+  ↓
+result = ...
+  ↓
+print(x)
+  ↓
+return result
+```
+
+그러려면 실행이 중단되었을 때의 상태가 유지되어야 한다.
+
+예를 들어 Python은 실행을 이어가기 위해 다음과 같은 상태를 보존해야 한다.
+
+```text
+local variables
+
+현재 실행 위치
+
+실행을 이어가기 위해 필요한 상태
+```
+
+앞에서 살펴본 Frame의 실행 상태와 연결해서 생각할 수 있다.
 
 ```text
 Code Object
      ↓
-   Frame
-     ↓
-   locals
- operand stack
-instruction position
-     ↓
-execution state
+실행 상태
+     │
+     ├── local variables
+     ├── instruction position
+     └── 그 밖의 실행에 필요한 상태
 ```
 
-Coroutine 역시 실행 상태를 유지하기 때문에 `await`에서 멈춘 뒤 나중에 그 지점부터 실행을 이어갈 수 있다.
-
-결국 Coroutine의 핵심도 다음 두 단어로 압축할 수 있다.
+Coroutine은 이러한 실행 상태와 연결되어 있기 때문에 중간에 실행이 멈추더라도 처음부터 다시 실행할 필요가 없다.
 
 ```text
+실행
+ ↓
 suspend
-   ↓
+ ↓
+실행 상태 유지
+ ↓
 resume
+ ↓
+이어서 실행
 ```
+
+따라서 Coroutine의 중요한 특징은 **실행 상태를 유지하면서 중단되고 다시 이어질 수 있다는 것**이다.
 
 ---
 
-## 3. `await`는 무엇을 하는가?
+## 3. `await`는 Coroutine이 실행을 양보할 수 있는 지점이다
 
-Coroutine의 핵심 문법은 `await`다.
-
-예를 들어 다음 코드가 있다고 해보자.
+Coroutine의 중단과 가장 밀접하게 연결되는 문법이 `await`다.
 
 ```python
 async def fetch_data():
@@ -198,184 +247,179 @@ async def fetch_data():
     return data
 ```
 
-처음 보면 `await`를 단순히 다음처럼 생각하기 쉽다.
+`await`는 흔히 다음처럼 설명한다.
 
-> request가 끝날 때까지 여기서 기다린다.
+> `request()`가 끝날 때까지 기다린다.
 
-틀린 설명은 아니지만, Coroutine을 이해하기에는 조금 부족하다.
+틀린 설명은 아니지만 Coroutine의 실행 구조를 이해하려면 **어떻게 기다리는가**를 함께 봐야 한다.
 
-더 중요한 것은 **어떻게 기다리는가**이다.
-
-일반적인 동기 코드라면 작업이 끝날 때까지 현재 실행 흐름을 붙잡고 있을 수 있다.
-
-하지만 `await`의 중요한 역할은 기다려야 하는 상황에서 **현재 Coroutine의 실행을 중단(suspend)할 수 있게 하는 것**이다.
-
-개념적으로는 다음과 같다.
+`request()`의 결과를 아직 얻을 수 없다면 `fetch_data()`는 다음 코드로 진행할 수 없다.
 
 ```text
-fetch_data 실행
-
-data = await request()
-             │
-             ├── 아직 완료되지 않음
-             │
-             ▼
-       fetch_data suspend
+fetch_data
+    ↓
+request()
+    ↓
+결과를 기다려야 함
+    ↓
+현재 실행을 계속할 수 없음
 ```
 
-이때 `fetch_data()`가 끝난 것은 아니다.
+일반적인 blocking 방식이라면 현재 실행 흐름이 결과가 준비될 때까지 붙잡혀 있을 수 있다.
 
-`return`한 것도 아니다.
-
-단지 **실행 중간에 멈춰 있는 상태**다.
-
-그리고 기다리던 작업이 완료되면 다시 실행될 수 있다.
+Coroutine은 기다려야 하는 동안 자신의 실행 상태를 유지한 채 실행을 중단할 수 있다.
 
 ```text
-request 완료
-     ↓
-fetch_data resume
-     ↓
+Coroutine 실행
+      ↓
+await request()
+      ↓
+결과를 기다려야 함
+      ↓
+   suspend
+```
+
+이때 Coroutine은 `return`한 것도 아니고 실행이 완료된 것도 아니다.
+
+나중에 실행이 재개되면 `await`의 결과를 받아 이후 코드를 계속 진행할 수 있다.
+
+```text
+resume
+  ↓
+await의 결과 획득
+  ↓
 data에 결과 저장
-     ↓
+  ↓
 return data
 ```
 
-따라서 `await`의 핵심은 단순한 "대기"보다 다음에 가깝다.
+현재 Coroutine이 실행을 중단할 수 있기 때문에, 그동안 다른 비동기 작업을 진행할 수 있는 여지가 생긴다.
 
-> **지금 결과를 얻을 수 없다면 현재 Coroutine의 실행을 중단하고, 결과를 얻을 수 있게 되었을 때 다시 실행을 이어갈 수 있도록 한다.**
+따라서 `await`는 **결과를 기다리는 과정에서 필요하다면 현재 Coroutine이 실행을 양보할 수 있는 지점**이라고 볼 수 있다.
 
 ---
 
-## 4. suspend는 프로그램 전체를 멈추는 것이 아니다
+## 4. `await`가 항상 Coroutine을 중단시키는 것은 아니다
 
-여기서 매우 중요한 차이가 하나 있다.
+`await`를 만났다고 해서 Coroutine이 항상 중단되는 것은 아니다.
 
-Coroutine이 suspend된다고 해서 **Python 프로그램 전체가 suspend되는 것은 아니다.**
+중요한 것은 실제로 **기다려야 하는가**이다.
 
-예를 들어 두 Coroutine이 있다고 해보자.
-
-```python
-async def task_a():
-    print("A start")
-    await something()
-    print("A end")
-
-async def task_b():
-    print("B")
-```
-
-`task_a`가 `await`에서 기다려야 한다면 개념적으로 다음과 같은 일이 가능하다.
+개념적으로 다음처럼 생각할 수 있다.
 
 ```text
-task_a
-│
-├─ "A start"
-│
-├─ await something()
-│
-└─ suspend
-       ↓
-   task_b 실행
-       │
-       └─ "B"
-       ↓
-something 완료
-       ↓
-task_a resume
-│
-└─ "A end"
+await something
+      │
+      ▼
+결과를 얻기 위해
+기다려야 하는가?
+      │
+   ┌──┴──┐
+   │     │
+  no    yes
+   │     │
+   ▼     ▼
+계속 실행  suspend
 ```
 
-즉 Coroutine은
+기다릴 필요가 없다면 현재 Coroutine은 그대로 계속 진행할 수 있다.
 
-> **내가 지금 할 일이 없으니 다른 실행 흐름이 진행될 수 있도록 실행권을 넘길 수 있는 구조**
+반대로 결과를 아직 얻을 수 없다면 실행을 중단하고 나중에 다시 이어갈 수 있다.
 
-를 제공한다.
+따라서
 
-이것이 일반적인 함수 호출과 Coroutine 실행의 큰 차이다.
+```text
+await
+ ↓
+suspend
+```
+
+라고 항상 연결하기보다는
+
+```text
+await
+ ↓
+필요하다면
+suspend
+```
+
+라고 이해하는 것이 더 정확하다.
+
+`await`는 **Coroutine이 중단될 수 있는 지점**이지, 항상 실행을 중단시키는 명령은 아니다.
 
 ---
 
-## 5. `await` 뒤에는 아무거나 올 수 있을까?
+## 5. `await`의 대상은 Awaitable이다
 
-그렇지는 않다.
+`await` 뒤에는 아무 객체나 올 수 있는 것은 아니다.
 
-다음과 같은 코드는 사용할 수 없다.
+다음 코드는 사용할 수 없다.
 
 ```python
 async def main():
-    x = await 10
+    result = await 10
 ```
 
-`10`은 기다릴 수 있는 대상이 아니기 때문이다.
+정수 `10`은 `await`할 수 있는 객체가 아니기 때문이다.
 
-`await` 뒤에는 **Awaitable** 객체가 와야 한다.
-
-Python에서 Awaitable은 말 그대로
-
-> **await할 수 있는 객체**
-
-를 의미한다.
-
-대표적으로 다음과 같은 것들이 있다.
+Python에서는 `await`할 수 있는 객체를 **Awaitable**이라고 한다.
 
 ```text
 Awaitable
-├── Coroutine
-├── Task
-└── Future
+    │
+    └── await할 수 있는 객체
 ```
 
-예를 들어 Coroutine 자체도 Awaitable이다.
+Coroutine Object도 Awaitable이다.
 
 ```python
-async def foo():
+async def fetch():
     return 10
 
+
 async def main():
-    result = await foo()
+    result = await fetch()
 ```
 
-여기서
-
-```python
-foo()
-```
-
-는 Coroutine Object를 반환하고,
-
-```python
-await foo()
-```
-
-는 그 Coroutine의 완료를 기다린다.
-
-따라서 관계를 단순화하면 다음과 같다.
+`fetch()`를 호출하면 Coroutine Object가 만들어진다.
 
 ```text
-foo()
- ↓
+fetch()
+   ↓
 Coroutine Object
- ↓
-Awaitable
- ↓
+```
+
+그리고 이 객체는 `await`할 수 있다.
+
+```text
+fetch()
+   ↓
+Coroutine Object
+   ↓
 await 가능
 ```
 
-다만 **Awaitable = Coroutine**은 아니다.
+따라서 다음 코드가 가능한 것이다.
 
-Coroutine은 Awaitable의 한 종류일 뿐이다.
+```python
+result = await fetch()
+```
 
-이 구분은 이후 `Task`, `Future`, `Event Loop`를 이해할 때 중요해진다.
+여기서 **Awaitable과 Coroutine은 같은 개념이 아니다.**
+
+Awaitable은 `await`할 수 있다는 성질을 나타내고, Coroutine은 그 조건을 만족하는 객체 중 하나다.
+
+Python의 비동기 실행에서는 이후 살펴볼 `Task`, `Future` 같은 객체도 Awaitable이다.
+
+이 객체들이 왜 필요한지는 여러 Coroutine을 실제로 실행하고 관리하는 구조를 살펴보면서 다음 글에서 연결한다.
 
 ---
 
-## 6. `await`는 `return`과 무엇이 다른가?
+## 6. `return`은 실행을 종료하고 `await`는 실행을 중단할 수 있다
 
-`return`과 `await`는 실행 흐름을 다룬다는 점에서는 비슷해 보이지만 의미는 완전히 다르다.
+`return`과 `await`는 모두 실행 흐름에 영향을 주지만 역할은 다르다.
 
-`return`은 함수의 실행을 **종료**한다.
+일반적인 함수에서 `return`을 실행하면 함수 실행이 종료된다.
 
 ```python
 def func():
@@ -383,9 +427,17 @@ def func():
     return x
 ```
 
-`return` 이후 이 함수의 실행 상태를 다시 이어갈 필요가 없다.
+```text
+execution
+   ↓
+return
+   ↓
+finished
+```
 
-반면 `await`는 Coroutine의 실행을 **중단할 수 있다.**
+`return` 이후에는 이 함수의 실행을 다시 이어갈 필요가 없다.
+
+Coroutine의 `await`는 다르다.
 
 ```python
 async def func():
@@ -397,9 +449,33 @@ async def func():
     return result
 ```
 
-`await`에서 Coroutine이 suspend되더라도 `func`는 끝난 것이 아니다.
+`await`에서 기다려야 한다면 Coroutine은 실행을 중단할 수 있다.
 
-나중에 resume되어 다음 코드를 계속 실행해야 한다.
+```text
+execution
+   ↓
+ await
+   ↓
+suspend
+```
+
+하지만 실행은 아직 끝나지 않았다.
+
+나중에 다시 실행될 수 있다.
+
+```text
+suspend
+   ↓
+resume
+   ↓
+print(x)
+   ↓
+return
+   ↓
+finished
+```
+
+두 동작을 비교하면 다음과 같다.
 
 ```text
 return
@@ -409,218 +485,193 @@ execution finished
 
 await
   ↓
-execution suspended
+필요하다면 execution suspended
   ↓
 resume
   ↓
 execution continues
 ```
 
-이 차이가 Coroutine을 이해하는 핵심이다.
+`return`은 **실행의 종료**이고, `await`에서 발생할 수 있는 suspend는 **실행의 일시적인 중단**이다.
 
 ---
 
-## 7. Generator의 `yield`와 Coroutine의 `await`는 왜 비슷해 보일까?
+## 7. 여러 Coroutine의 실행에는 별도의 관리가 필요하다
 
-앞선 Generator를 다시 생각해보자.
-
-```python
-def gen():
-    print("A")
-    yield 1
-    print("B")
-```
-
-Generator는 `yield`에서 실행을 멈춘다.
+Coroutine 하나의 실행 구조는 지금까지 살펴본 내용으로 정리할 수 있다.
 
 ```text
-Generator
-
-execution
-   ↓
-yield
-   ↓
-suspend
-   ↓
-next()
-   ↓
-resume
+Coroutine Object
+       ↓
+     실행
+       ↓
+     await
+       ↓
+필요하다면 suspend
+       ↓
+     resume
 ```
 
-Coroutine도 구조적으로 비슷한 모습을 가진다.
+하지만 실제 비동기 프로그램에서는 여러 Coroutine이 함께 존재할 수 있다.
+
+```text
+Coroutine A
+
+Coroutine B
+
+Coroutine C
+```
+
+각 Coroutine은 서로 다른 실행 상태에 있을 수 있다.
+
+```text
+Coroutine A → 실행 가능
+
+Coroutine B → 기다리는 중
+
+Coroutine C → 완료
+```
+
+Coroutine 자체가 제공하는 것은 **중단되고 다시 이어질 수 있는 실행 흐름**이다.
+
+여러 Coroutine이 존재하면 이보다 더 많은 관리가 필요하다.
+
+```text
+어떤 실행을 지금 진행할 것인가
+
+어떤 실행이 기다리고 있는가
+
+기다리던 작업이 언제 준비되었는가
+
+완료된 실행의 결과는 무엇인가
+```
+
+Python의 `asyncio`에서는 Coroutine을 이러한 비동기 실행 시스템에서 관리하기 위해 **Task**를 사용한다.
+
+그리고 여러 Task의 실행을 조율하는 중심에 **Event Loop**가 있다.
 
 ```text
 Coroutine
-
-execution
-   ↓
- await
-   ↓
-suspend
-   ↓
-기다리던 작업 완료
-   ↓
-resume
-```
-
-둘 모두 핵심은
-
-```text
-실행
- ↓
-중단
- ↓
-실행 상태 보존
- ↓
-재개
-```
-
-이다.
-
-하지만 목적에는 차이가 있다.
-
-Generator는 주로 **값을 필요할 때 하나씩 생산하는 실행 흐름**을 만드는 데 사용된다.
-
-Coroutine은 주로 **기다리는 동안 실행을 양보할 수 있는 비동기 실행 흐름**을 만드는 데 사용된다.
-
-그래서 앞선 Generator를 이해했다면 Coroutine은 완전히 새로운 개념이라기보다,
-
-> **중단하고 재개할 수 있는 실행 모델이 비동기 프로그래밍으로 확장된 것**
-
-으로 바라보는 것이 좋다.
-
----
-
-## 8. 그런데 누가 Coroutine을 다시 실행시켜주는가?
-
-여기까지 오면 중요한 의문이 하나 남는다.
-
-```python
-async def main():
-    data = await fetch_data()
-```
-
-`fetch_data()`가 기다려야 해서 suspend되었다고 해보자.
-
-그렇다면 누가 다음을 판단할까?
-
-```text
-fetch_data는 지금 기다려야 한다.
-
-그동안 다른 Coroutine을 실행하자.
-
-fetch_data가 기다리던 작업이 끝났다.
-
-이제 fetch_data를 다시 실행하자.
-```
-
-Coroutine 자체가 이 모든 것을 관리하는 것은 아니다.
-
-Coroutine은 기본적으로 **중단되고 재개될 수 있는 실행 단위**다.
-
-그렇다면 여러 Coroutine을 관리하면서
-
-```text
-누구를 실행할지
-
-누구를 기다리게 할지
-
-누구를 다시 깨울지
-```
-
-결정하는 무언가가 필요하다.
-
-Python의 `asyncio`에서는 이 역할의 중심에 **Event Loop**가 있다.
-
-그리고 Coroutine을 Event Loop가 관리할 수 있는 실행 단위로 감싸는 **Task**, 아직 완료되지 않은 비동기 결과를 표현하는 **Future** 같은 개념이 등장한다.
-
-전체 구조는 점차 다음과 같이 확장된다.
-
-```text
-async def
-   ↓
-Coroutine Object
    ↓
  Task
    ↓
 Event Loop
-   ↓
-  실행
-   ↓
- await
-   ↓
-suspend
-   ↓
-다른 Task 실행
-   ↓
-Awaitable 완료
-   ↓
-resume
 ```
 
-이제 `async` / `await` 문법만 알고 있는 것에서 한 단계 더 나아가,
+실행 도중 아직 완료되지 않은 비동기 결과를 표현하기 위해서는 **Future** 같은 객체도 사용된다.
 
-**Python이 어떻게 여러 Coroutine의 실행을 조율하는가**
+```text
+Coroutine
+   │
+   ▼
+ Task
+   │
+   ▼
+Event Loop
 
-라는 질문으로 넘어갈 수 있다.
+Future
+→ 아직 완료되지 않은 결과를 표현
+```
+
+즉 지금까지 살펴본 Coroutine은 비동기 실행 시스템의 출발점이다.
+
+```text
+Coroutine
+────────────────────
+중단되고 재개될 수 있는
+비동기 실행 흐름
+
+
+Task / Future / Event Loop
+────────────────────
+여러 Coroutine을 실제
+비동기 작업으로 실행하고 관리
+```
+
+Coroutine 하나의 실행 모델이 여러 비동기 작업으로 확장되면서 `Task`, `Future`, `Event Loop`가 필요해진다.
+
+이 구조는 다음 글에서 자세히 살펴본다.
 
 ---
 
 # 정리
 
-`async def`로 정의된 함수를 호출하면 일반 함수처럼 본문이 즉시 끝까지 실행되는 것이 아니라 **Coroutine Object**가 만들어진다.
+`async def`로 정의한 Coroutine Function을 호출하면 Coroutine Object가 만들어진다.
 
 ```text
-async def
-   ↓
 Coroutine Function
-   ↓ 호출
+       ↓ call
 Coroutine Object
 ```
 
-Coroutine은 실행 도중 `await`를 만났을 때 기다리는 작업이 완료되지 않았다면 자신의 실행 상태를 보존한 채 **suspend**될 수 있다.
+Coroutine Object는 **중단되고 다시 이어질 수 있는 비동기 실행 흐름**을 표현한다.
 
 ```text
 Coroutine
    ↓
 execution
    ↓
-await Awaitable
+await
    ↓
-suspend
-```
-
-그리고 기다리던 작업이 완료되면 이전 실행 상태를 이용해 다시 실행을 이어간다.
-
-```text
-Awaitable 완료
+필요하다면 suspend
    ↓
 resume
    ↓
-continue execution
+continue
 ```
 
-따라서 Coroutine의 본질은 단순히 "`async`를 붙인 함수"가 아니다.
-
-> **실행 상태를 유지한 채 중단되고 다시 재개될 수 있는 비동기 실행 흐름이다.**
-
-그리고 이 구조는 앞에서 살펴본 Generator와 연결된다.
+이러한 중단과 재개가 가능한 이유는 Coroutine이 실행 상태와 연결되어 있기 때문이다.
 
 ```text
-Generator
-yield → suspend → next() → resume
-
-Coroutine
-await → suspend → Awaitable 완료 → resume
+실행
+ ↓
+suspend
+ ↓
+실행 상태 유지
+ ↓
+resume
+ ↓
+이어서 실행
 ```
 
-하지만 여기에는 아직 한 가지 중요한 부분이 빠져 있다.
+`await` 뒤에는 `await`할 수 있는 **Awaitable**이 오며, Coroutine Object도 Awaitable의 한 종류다.
 
-Coroutine은 **중단될 수 있는 방법**을 제공하지만, 여러 Coroutine 중 무엇을 언제 실행하고 다시 깨울 것인지는 스스로 결정하지 않는다.
+또한 `await`는 무조건 실행을 중단시키는 명령이 아니다.
 
-그렇다면 Python은 수많은 Coroutine을 어떻게 관리하고 실행 순서를 조율할까?
+```text
+await
+  │
+  ├── 기다릴 필요 없음 → 계속 실행
+  │
+  └── 기다려야 함      → suspend 가능
+```
 
-다음 글에서는 이 실행 흐름의 중심에 있는 **Event Loop**를 살펴보자.
+이 구조는 앞에서 살펴본 Generator와도 연결된다.
+
+```text
+Generator Function
+       ↓
+Generator Object
+       ↓
+for / next()
+       ↓
+실행
+
+
+Coroutine Function
+       ↓
+Coroutine Object
+       ↓
+비동기 실행 시스템
+       ↓
+실행
+```
+
+Generator에서 `for`와 `next()`가 실행을 진행시켰던 것처럼, Coroutine도 실제 실행을 진행하고 관리하는 외부 구조가 필요하다.
+
+Python의 `asyncio`에서는 Coroutine을 `Task`라는 관리 가능한 비동기 작업으로 다루고, `Event Loop`가 이러한 작업들의 실행을 조율한다.
+
+다음 글에서는 **Coroutine → Task → Future → Event Loop**로 실행 구조를 확장하면서 여러 Coroutine이 실제로 어떻게 함께 실행되는지 살펴본다.
 
 ---
-**다음 글 : 09. Event Loop는 여러 Coroutine을 어떻게 실행하는가?**
+**다음 글 : 09. Event Loop는 Coroutine을 어떻게 실행하는가?**
