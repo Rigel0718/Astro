@@ -96,6 +96,17 @@ Astro의 Content Collections와 기존 AstroPaper의 post 구조에서 자연스
 
 일반적인 블로그 글을 작성하기 위해 불필요한 custom markup이나 component 사용을 요구하지 않는다.
 
+### Python 시리즈 추가
+
+새 Python 시리즈는 기존 시리즈와 같은 구조로 추가한다.
+
+1. `src/config/postTopics.ts`의 `POST_TOPICS.python.series`에 slug, title, description, metaDescription, 전체 episodeCount를 등록한다.
+2. `src/pages/posts/python/<series-slug>.astro`에 기존 Python 시리즈 상세 페이지를 재사용한 목차 route를 추가하고, 등록한 series key와 게시물 경로 prefix만 새 시리즈에 맞춘다.
+3. `src/content/posts/python/<series-slug>/` 디렉터리와 `_episode-template.md`를 만든다. 템플릿에는 해당 시리즈 tag를 기본으로 넣고 `draft: true`로 둔다.
+4. 에피소드는 템플릿을 복사해 `01-주제.md`, `02-주제.md`처럼 두 자리 번호로 시작하는 파일명으로 작성한다. 파일명 순서가 목차 순서가 되며, `_`로 시작하는 템플릿은 Content Collection에서 제외된다.
+5. 계획한 전체 편수가 바뀌면 `episodeCount`를 함께 갱신한다. 링크에는 Astro의 locale/base-path 처리 방식을 유지한다.
+
+시리즈 추가는 configuration과 route 변경을 포함하므로 `npm run build`로 검증하고, 구조나 책임이 달라졌다면 `PROJECT.md`도 갱신한다.
 
 ## 검증
 
