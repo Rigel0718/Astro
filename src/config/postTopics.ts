@@ -31,7 +31,7 @@ export const POST_TOPICS = {
           "Python에서 함수는 어떻게 만들어지고 Method로 동작할까?\nFunction Object와 Scope, Closure, Decorator부터 Descriptor를 통한 Method Binding과 self, cls까지 차근차근 살펴봅니다.",
         metaDescription:
           "파이썬의 함수와 Method가 만들어지고 연결되는 과정을 순서대로 살펴보는 10개 에피소드 시리즈입니다.",
-        episodeCount: 10,
+        episodeCount: 7,
       },
     },
   },
