@@ -20,6 +20,18 @@ Create clear, technically accurate SVG diagrams for the AstroPaper blog. Own the
 
 ## 2. Visual principles
 
+### Information density
+
+- Each diagram should communicate one primary concept.
+- Prefer 3–5 major visual elements whenever possible.
+- Do not visualize every technical detail from the article.
+- Leave implementation details, exceptions, and caveats in the surrounding prose.
+- If a diagram requires too many arrows or annotations, simplify it or split it into separate diagrams.
+- Visual clarity takes priority over information density.
+- Treat diagrams as visual aids for the article, not replacements for the article's explanations.
+
+### Visual design
+
 - Produce clean, professional, editorial-quality diagrams suitable for a technical blog.
 - Favor legible typography, restrained colors, consistent spacing, aligned elements, subtle borders, and purposeful whitespace.
 - Use the existing blog's colors, typography, and visual conventions where practical. A teal accent is appropriate if it matches existing diagrams.
