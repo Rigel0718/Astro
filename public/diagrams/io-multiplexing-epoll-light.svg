@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 620" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">epoll이 여러 파일 디스크립터의 준비 상태를 감시하는 구조</title>
+  <desc id="diagram-desc">User Space의 Python Application 아래 Kernel Space에 epoll이 있고, epoll은 Pipe A의 FD A, Pipe B의 FD B, Pipe C의 FD C를 감시한다. Pipe B만 Ready 상태이며 epoll은 Python Application에 FD B Ready 결과를 알린다.</desc>
+  <defs>
+    <filter id="shadow" x="-15%" y="-20%" width="130%" height="150%"><feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.08"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#2563eb"/></marker>
+  </defs>
+  <style>
+    .canvas{fill:#f8fafc}.user-zone{fill:#f1f5f9;stroke:#cbd5e1;stroke-width:1.5}.kernel-zone{fill:#f0fdfa;stroke:#99f6e4;stroke-width:1.5}.card{fill:#fff;stroke:#cbd5e1;stroke-width:1.5;filter:url(#shadow)}.epoll{fill:#fff;stroke:#0d9488;stroke-width:2;filter:url(#shadow)}.pipe{fill:#fff;stroke:#94a3b8;stroke-width:1.5}.pipe-ready{fill:#dbeafe;stroke:#2563eb;stroke-width:2.5;filter:url(#shadow)}.result{fill:#dbeafe;stroke:#2563eb;stroke-width:1.5}.connector{fill:none;stroke:#94a3b8;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.notify{fill:none;stroke:#2563eb;stroke-width:3;stroke-linecap:round;marker-end:url(#arrow)}
+    .eyebrow{fill:#0d9488;font:700 13px ui-monospace,monospace;letter-spacing:1.5px}.title{fill:#0f172a;font:700 28px ui-sans-serif,system-ui,sans-serif;letter-spacing:-.4px}.zone-label{fill:#0f766e;font:700 11px ui-monospace,monospace;letter-spacing:1.1px}.heading{fill:#0f172a;font:700 20px ui-sans-serif,system-ui,sans-serif}.label{fill:#0f172a;font:650 15px ui-sans-serif,system-ui,sans-serif}.mono{fill:#334155;font:600 13px ui-monospace,monospace}.muted{fill:#64748b;font:500 12px ui-sans-serif,system-ui,sans-serif}.ready{fill:#1d4ed8;font:700 13px ui-sans-serif,system-ui,sans-serif}.result-text{fill:#1d4ed8;font:700 14px ui-monospace,monospace}
+  </style>
+  <rect class="canvas" width="800" height="620" rx="20"/>
+  <text class="eyebrow" x="44" y="45">I/O MULTIPLEXING</text><text class="title" x="44" y="82">epoll watches many FDs</text>
+  <rect class="user-zone" x="44" y="112" width="712" height="128" rx="14"/><text class="zone-label" x="66" y="140">USER SPACE</text>
+  <rect class="card" x="66" y="156" width="668" height="62" rx="10"/><text class="heading" x="92" y="194">Python Application</text>
+  <rect class="result" x="530" y="169" width="176" height="36" rx="18"/><text class="result-text" x="618" y="192" text-anchor="middle">FD B Ready</text>
+  <rect class="kernel-zone" x="44" y="264" width="712" height="312" rx="14"/><text class="zone-label" x="66" y="294">KERNEL SPACE</text>
+  <rect class="epoll" x="230" y="318" width="340" height="82" rx="12"/><text class="heading" x="400" y="351" text-anchor="middle">epoll</text><text class="mono" x="400" y="378" text-anchor="middle">Watching FD A · FD B · FD C</text>
+  <path class="notify" d="M570 345 H618 V220"/><path class="connector" d="M400 400 V438 M156 438 H644 M156 438 V464 M400 438 V464 M644 438 V464"/>
+  <rect class="pipe" x="80" y="464" width="152" height="72" rx="10"/><text class="label" x="156" y="493" text-anchor="middle">Pipe A</text><text class="muted" x="156" y="518" text-anchor="middle">FD A</text>
+  <rect class="pipe-ready" x="324" y="464" width="152" height="72" rx="10"/><text class="label" x="400" y="493" text-anchor="middle">Pipe B</text><text class="ready" x="400" y="518" text-anchor="middle">FD B · Ready</text>
+  <rect class="pipe" x="568" y="464" width="152" height="72" rx="10"/><text class="label" x="644" y="493" text-anchor="middle">Pipe C</text><text class="muted" x="644" y="518" text-anchor="middle">FD C</text>
+</svg>
