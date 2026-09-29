@@ -2,7 +2,7 @@
 
 title: "07. MCP의 stdio 통신은 어떻게 동작하는가"
 description: "Python의 프로세스 생성, File Descriptor, Pipe, 표준 입출력 개념을 바탕으로 MCP Client와 Server의 stdio 통신 및 Tool Calling 과정을 이해합니다."
-pubDatetime: 2026-09-29T01:00:00+09:00
+pubDatetime: 2026-09-29T01:10:10+09:00
 tags:
 
 - Python
