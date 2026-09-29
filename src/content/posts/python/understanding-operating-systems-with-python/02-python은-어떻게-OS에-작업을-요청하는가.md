@@ -1,7 +1,7 @@
 ---
 title: "02. Python은 어떻게 OS에 작업을 요청하는가"
 description: "Python의 os.read()를 예시로 System Call의 동작 원리와 사용자 공간, 커널 공간, CPU의 실행 모드 전환 과정을 이해합니다."
-pubDatetime: 2026-09-30T09:20:00+09:00
+pubDatetime: 2026-09-29T09:10:00+09:00
 tags:
   - Python
   - Python으로 이해하는 운영체제

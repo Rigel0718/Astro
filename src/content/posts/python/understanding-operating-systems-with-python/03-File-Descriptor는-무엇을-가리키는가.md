@@ -2,7 +2,7 @@
 
 title: "03. File Descriptor는 무엇을 가리키는가"
 description: "File Descriptor의 개념과 프로세스의 FD 테이블, 커널의 열린 파일 정보, Python의 open, read, write, close 동작을 이해합니다."
-pubDatetime: 2026-09-30T09:30:00+09:00
+pubDatetime: 2026-09-29T09:20:00+09:00
 tags:
 
 - Python
