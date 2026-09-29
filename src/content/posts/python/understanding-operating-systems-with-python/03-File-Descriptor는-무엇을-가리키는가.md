@@ -11,7 +11,7 @@ tags:
 - File System
 - System Call
 
-draft: true
+draft: False
 
 ---
 
