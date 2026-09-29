@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 980" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">MCP stdio architecture and message flow</title>
+  <desc id="diagram-desc">An MCP Client parent process starts an MCP Server child process. Two one-way kernel pipe buffers carry initialize, tools/list, and tools/call requests from the client to server standard input file descriptor 0, and JSON-RPC responses from server standard output file descriptor 1 back to the client. Server standard error file descriptor 2 uses a separate dashed log channel. A five-step timeline summarizes process creation, initialization, tool discovery, tool calling, and response.</desc>
+  <defs>
+    <filter id="shadow" x="-15%" y="-20%" width="130%" height="150%"><feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.08"/></filter>
+    <marker id="arrow-request" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#0d9488"/></marker>
+    <marker id="arrow-response" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#2563eb"/></marker>
+    <marker id="arrow-log" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#64748b"/></marker>
+    <marker id="arrow-spawn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#475569"/></marker>
+  </defs>
+  <style>
+    .canvas{fill:#f8fafc}.divider{stroke:#cbd5e1}.process{fill:#f1f5f9;stroke:#cbd5e1;stroke-width:1.5}.kernel{fill:#f0fdfa;stroke:#5eead4;stroke-width:1.5}.card{fill:#fff;stroke:#cbd5e1;stroke-width:1.5;filter:url(#shadow)}.fd{fill:#fff;stroke:#94a3b8;stroke-width:1.5}.request-box{fill:#ccfbf1;stroke:#0d9488;stroke-width:1.5}.response-box{fill:#dbeafe;stroke:#2563eb;stroke-width:1.5}.log-box{fill:#f8fafc;stroke:#94a3b8;stroke-width:1.5;stroke-dasharray:6 5}.step{fill:#fff;stroke:#cbd5e1;stroke-width:1.5}.step-active{fill:#f0fdfa;stroke:#0d9488;stroke-width:1.5}
+    .eyebrow{fill:#0d9488;font:700 14px ui-monospace,monospace;letter-spacing:1.6px}.title{fill:#0f172a;font:700 32px ui-sans-serif,system-ui,sans-serif;letter-spacing:-.6px}.subtitle{fill:#64748b;font:400 16px ui-sans-serif,system-ui,sans-serif}.zone{fill:#0f766e;font:700 12px ui-monospace,monospace;letter-spacing:1.1px}.process-title{fill:#0f172a;font:700 21px ui-sans-serif,system-ui,sans-serif}.card-title{fill:#0f172a;font:700 15px ui-sans-serif,system-ui,sans-serif}.note{fill:#64748b;font:500 12.5px ui-sans-serif,system-ui,sans-serif}.mono{fill:#0f172a;font:600 13px ui-monospace,monospace}.request-text{fill:#0f766e;font:700 13px ui-sans-serif,system-ui,sans-serif}.response-text{fill:#1d4ed8;font:700 13px ui-sans-serif,system-ui,sans-serif}.log-text{fill:#475569;font:700 12.5px ui-sans-serif,system-ui,sans-serif}.step-number{fill:#0d9488;font:700 12px ui-monospace,monospace}.step-title{fill:#0f172a;font:700 13px ui-sans-serif,system-ui,sans-serif}.step-note{fill:#64748b;font:500 11.5px ui-sans-serif,system-ui,sans-serif}
+    .spawn{fill:none;stroke:#475569;stroke-width:2;stroke-linecap:round;marker-end:url(#arrow-spawn)}.request{fill:none;stroke:#0d9488;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow-request)}.response{fill:none;stroke:#2563eb;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:8 6;marker-end:url(#arrow-response)}.log{fill:none;stroke:#64748b;stroke-width:2.5;stroke-linecap:round;stroke-dasharray:3 6;marker-end:url(#arrow-log)}.timeline{stroke:#94a3b8;stroke-width:2}
+  </style>
+  <rect class="canvas" width="1000" height="980" rx="20"/>
+  <text class="eyebrow" x="54" y="58">MCP · STDIO TRANSPORT</text>
+  <text class="title" x="54" y="103">Parent, child, and two one-way pipes</text>
+  <text class="subtitle" x="54" y="136">JSON-RPC uses stdout; diagnostics stay on a separate stderr channel</text>
+  <line class="divider" x1="54" y1="164" x2="946" y2="164"/>
+
+  <path class="spawn" d="M292 208 C405 165 590 165 704 208"/>
+  <text class="log-text" x="500" y="188" text-anchor="middle">spawn child process</text>
+
+  <rect class="process" x="54" y="204" width="270" height="532" rx="14"/>
+  <text class="zone" x="78" y="238">PARENT PROCESS</text>
+  <text class="process-title" x="78" y="274">MCP Client</text>
+  <rect class="card" x="78" y="298" width="222" height="74" rx="10"/>
+  <text class="card-title" x="189" y="327" text-anchor="middle">Session + Tool UI</text>
+  <text class="note" x="189" y="351" text-anchor="middle">start · discover · call</text>
+  <rect class="fd" x="78" y="398" width="222" height="274" rx="10"/>
+  <text class="card-title" x="98" y="427">Client pipe endpoints</text>
+  <text class="note" x="98" y="449">process-local file descriptors</text>
+  <line class="divider" x1="98" y1="466" x2="280" y2="466"/>
+  <rect class="request-box" x="98" y="486" width="182" height="50" rx="8"/>
+  <text class="mono" x="112" y="507">write FD</text><text class="request-text" x="112" y="526">request stream →</text>
+  <rect class="response-box" x="98" y="552" width="182" height="50" rx="8"/>
+  <text class="mono" x="112" y="573">read FD</text><text class="response-text" x="112" y="592">← response stream</text>
+  <rect class="log-box" x="98" y="618" width="182" height="34" rx="8"/>
+  <text class="log-text" x="112" y="640">log reader / terminal</text>
+
+  <rect class="kernel" x="354" y="204" width="292" height="532" rx="14"/>
+  <text class="zone" x="378" y="238">OPERATING SYSTEM KERNEL</text>
+  <text class="process-title" x="378" y="274">Pipe buffers</text>
+  <rect class="request-box" x="378" y="354" width="244" height="128" rx="12"/>
+  <text class="request-text" x="400" y="385">PIPE A · Client → Server</text>
+  <text class="card-title" x="400" y="415">Kernel Pipe Buffer</text>
+  <text class="note" x="400" y="440">initialize · tools/list</text>
+  <text class="note" x="400" y="461">tools/call · one-way bytes</text>
+  <rect class="response-box" x="378" y="518" width="244" height="110" rx="12"/>
+  <text class="response-text" x="400" y="549">PIPE B · Server → Client</text>
+  <text class="card-title" x="400" y="579">Kernel Pipe Buffer</text>
+  <text class="note" x="400" y="604">JSON-RPC responses · one-way bytes</text>
+  <rect class="log-box" x="378" y="650" width="244" height="50" rx="10"/>
+  <text class="log-text" x="400" y="671">SEPARATE LOG CHANNEL</text>
+  <text class="note" x="400" y="690">optional Pipe or inherited stderr</text>
+
+  <rect class="process" x="676" y="204" width="270" height="532" rx="14"/>
+  <text class="zone" x="700" y="238">CHILD PROCESS</text>
+  <text class="process-title" x="700" y="274">MCP Server</text>
+  <rect class="card" x="700" y="298" width="222" height="74" rx="10"/>
+  <text class="card-title" x="811" y="327" text-anchor="middle">Protocol + Tools</text>
+  <text class="note" x="811" y="351" text-anchor="middle">parse · execute · respond</text>
+  <rect class="fd" x="700" y="398" width="222" height="274" rx="10"/>
+  <text class="card-title" x="720" y="427">Standard streams</text>
+  <text class="note" x="720" y="449">remapped when process starts</text>
+  <line class="divider" x1="720" y1="466" x2="902" y2="466"/>
+  <rect class="request-box" x="720" y="486" width="182" height="50" rx="8"/>
+  <text class="mono" x="734" y="507">FD 0 · stdin</text><text class="request-text" x="734" y="526">← request stream</text>
+  <rect class="response-box" x="720" y="552" width="182" height="50" rx="8"/>
+  <text class="mono" x="734" y="573">FD 1 · stdout</text><text class="response-text" x="734" y="592">response stream →</text>
+  <rect class="log-box" x="720" y="618" width="182" height="34" rx="8"/>
+  <text class="mono" x="734" y="640">FD 2 · stderr · logs</text>
+
+  <path class="request" d="M280 511 H348 Q362 511 362 497 V418 H376"/><path class="request" d="M622 418 H662 Q678 418 678 434 V511 H718"/>
+  <path class="response" d="M720 577 H662 Q646 577 646 573 H624"/><path class="response" d="M378 573 H340 Q324 573 324 577 H282"/>
+  <path class="log" d="M720 635 H664 Q646 635 646 675 H624"/><path class="log" d="M378 675 H332 Q316 675 316 635 H282"/>
+
+  <text class="zone" x="54" y="782">SESSION FLOW</text>
+  <line class="timeline" x1="122" y1="840" x2="878" y2="840"/>
+  <rect class="step" x="54" y="808" width="150" height="108" rx="12"/><circle cx="78" cy="832" r="13" fill="#ccfbf1" stroke="#0d9488"/><text class="step-number" x="78" y="836" text-anchor="middle">1</text><text class="step-title" x="78" y="868">Process creation</text><text class="step-note" x="78" y="891">Client spawns Server</text>
+  <rect class="step-active" x="239" y="808" width="150" height="108" rx="12"/><circle cx="263" cy="832" r="13" fill="#ccfbf1" stroke="#0d9488"/><text class="step-number" x="263" y="836" text-anchor="middle">2</text><text class="step-title" x="263" y="868">Initialization</text><text class="step-note" x="263" y="891">initialize</text>
+  <rect class="step-active" x="424" y="808" width="150" height="108" rx="12"/><circle cx="448" cy="832" r="13" fill="#ccfbf1" stroke="#0d9488"/><text class="step-number" x="448" y="836" text-anchor="middle">3</text><text class="step-title" x="448" y="868">Tool Discovery</text><text class="step-note" x="448" y="891">tools/list</text>
+  <rect class="step-active" x="609" y="808" width="150" height="108" rx="12"/><circle cx="633" cy="832" r="13" fill="#ccfbf1" stroke="#0d9488"/><text class="step-number" x="633" y="836" text-anchor="middle">4</text><text class="step-title" x="633" y="868">Tool Calling</text><text class="step-note" x="633" y="891">tools/call</text>
+  <rect class="step" x="794" y="808" width="152" height="108" rx="12"/><circle cx="818" cy="832" r="13" fill="#dbeafe" stroke="#2563eb"/><text class="step-number" x="818" y="836" text-anchor="middle">5</text><text class="step-title" x="818" y="868">Response</text><text class="step-note" x="818" y="891">JSON-RPC result</text>
+  <text class="note" x="500" y="952" text-anchor="middle">Solid teal = requests · dashed blue = protocol responses · dotted gray = non-protocol logs</text>
+</svg>
