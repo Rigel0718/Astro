@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 720" role="img" aria-labelledby="title desc">
+  <title id="title">I/O redirection before and after</title>
+  <desc id="desc">Two matching Python process diagrams compare standard output before and after shell redirection. In both, unchanged print code writes through stdout to file descriptor 1. Before redirection, file descriptor 1 references the terminal. After the shell applies greater-than output.txt, file descriptor 1 references output.txt instead.</desc>
+  <defs>
+    <filter id="shadow" x="-15%" y="-20%" width="130%" height="150%"><feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#020617" flood-opacity=".35"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#2dd4bf"/></marker>
+  </defs>
+  <style>
+    .canvas{fill:#0b1120}.divider{stroke:#475569}.panel{fill:#162033;stroke:#475569;stroke-width:1.5}.panel-after{fill:#132f31;stroke:#0f766e;stroke-width:1.5}.card{fill:#1e293b;stroke:#475569;stroke-width:1.5;filter:url(#shadow)}.fd{fill:#1e293b;stroke:#2dd4bf;stroke-width:2;filter:url(#shadow)}.target-old{fill:#1e293b;stroke:#64748b;stroke-width:1.5}.target-new{fill:#134e4a;stroke:#2dd4bf;stroke-width:2}.eyebrow{fill:#2dd4bf;font:700 14px ui-monospace,monospace;letter-spacing:1.6px}.title{fill:#e2e8f0;font:700 34px ui-sans-serif,system-ui,sans-serif;letter-spacing:-.7px}.subtitle{fill:#94a3b8;font:400 17px ui-sans-serif,system-ui,sans-serif}.panel-label{fill:#5eead4;font:700 13px ui-monospace,monospace;letter-spacing:1.2px}.card-title{fill:#e2e8f0;font:700 18px ui-sans-serif,system-ui,sans-serif}.note{fill:#94a3b8;font:500 13px ui-sans-serif,system-ui,sans-serif}.mono{fill:#e2e8f0;font:600 16px ui-monospace,monospace}.fd-number{fill:#5eead4;font:700 24px ui-monospace,monospace}.connector{fill:none;stroke:#2dd4bf;stroke-width:2.5;stroke-linecap:round;marker-end:url(#arrow)}.connector-old{fill:none;stroke:#94a3b8;stroke-width:2.5;stroke-linecap:round;marker-end:url(#arrow)}.flow-label{fill:#5eead4;font:700 12px ui-monospace,monospace;letter-spacing:.5px}.shell{fill:#431407;stroke:#fb923c;stroke-width:1.5}.shell-text{fill:#fdba74;font:700 15px ui-monospace,monospace}.same{fill:#1e293b;stroke:#64748b}.same-text{fill:#cbd5e1;font:700 13px ui-sans-serif,system-ui,sans-serif}.changed{fill:#134e4a;stroke:#2dd4bf}.changed-text{fill:#99f6e4;font:700 13px ui-sans-serif,system-ui,sans-serif}
+  </style>
+  <rect class="canvas" width="1120" height="720" rx="20"/>
+  <text class="eyebrow" x="56" y="58">STANDARD OUTPUT · BEFORE / AFTER</text>
+  <text class="title" x="56" y="104">I/O Redirection</text>
+  <text class="subtitle" x="56" y="138">The program keeps writing to FD 1; the shell changes what FD 1 references.</text>
+  <line class="divider" x1="56" y1="168" x2="1064" y2="168"/>
+  <rect class="panel" x="56" y="200" width="472" height="408" rx="16"/><text class="panel-label" x="80" y="234">BEFORE · NO REDIRECTION</text>
+  <rect class="card" x="96" y="266" width="392" height="86" rx="10"/><text class="card-title" x="292" y="298" text-anchor="middle">Python Program</text><text class="mono" x="292" y="326" text-anchor="middle">print(&quot;Hello, World!&quot;)</text>
+  <path class="connector-old" d="M292 352V392"/><text class="flow-label" x="308" y="378">WRITES TO STDOUT</text>
+  <rect class="fd" x="164" y="394" width="256" height="78" rx="10"/><text class="fd-number" x="190" y="427">1</text><text class="card-title" x="226" y="426">stdout</text><text class="note" x="190" y="451">File descriptor table entry</text>
+  <path class="connector-old" d="M292 472V512"/><text class="flow-label" x="308" y="498">REFERENCES</text>
+  <rect class="target-old" x="164" y="514" width="256" height="62" rx="10"/><text class="card-title" x="292" y="551" text-anchor="middle">Terminal</text>
+  <rect class="panel-after" x="592" y="200" width="472" height="408" rx="16"/><text class="panel-label" x="616" y="234">AFTER · REDIRECTED</text>
+  <rect class="card" x="632" y="266" width="392" height="86" rx="10"/><text class="card-title" x="828" y="298" text-anchor="middle">Python Program</text><text class="mono" x="828" y="326" text-anchor="middle">print(&quot;Hello, World!&quot;)</text>
+  <path class="connector" d="M828 352V392"/><text class="flow-label" x="844" y="378">WRITES TO STDOUT</text>
+  <rect class="fd" x="700" y="394" width="256" height="78" rx="10"/><text class="fd-number" x="726" y="427">1</text><text class="card-title" x="762" y="426">stdout</text><text class="note" x="726" y="451">File descriptor table entry</text>
+  <path class="connector" d="M828 472V512"/><text class="flow-label" x="844" y="498">NOW REFERENCES</text>
+  <rect class="target-new" x="700" y="514" width="256" height="62" rx="10"/><text class="card-title" x="828" y="551" text-anchor="middle">output.txt</text>
+  <rect class="shell" x="456" y="180" width="208" height="42" rx="21"/><text class="shell-text" x="560" y="207" text-anchor="middle">shell: &gt; output.txt</text>
+  <rect class="same" x="194" y="635" width="298" height="42" rx="21"/><text class="same-text" x="343" y="661" text-anchor="middle">UNCHANGED · print() → stdout → FD 1</text>
+  <rect class="changed" x="628" y="635" width="298" height="42" rx="21"/><text class="changed-text" x="777" y="661" text-anchor="middle">CHANGED · FD 1 connection target</text>
+</svg>

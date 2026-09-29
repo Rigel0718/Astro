@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
+  <title id="title">Standard streams connected to a terminal</title>
+  <desc id="desc">A terminal sends input to file descriptor 0, stdin, in a Python process. File descriptor 1, stdout, and file descriptor 2, stderr, send output and errors from the Python process back to the terminal.</desc>
+  <defs>
+    <filter id="shadow" x="-15%" y="-20%" width="130%" height="150%"><feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity=".08"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#0d9488"/></marker>
+    <marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#64748b"/></marker>
+  </defs>
+  <style>
+    .canvas{fill:#f8fafc}.divider{stroke:#cbd5e1}.process{fill:#f0fdfa;stroke:#5eead4;stroke-width:1.5}.terminal{fill:#fff;stroke:#cbd5e1;stroke-width:1.5;filter:url(#shadow)}.screen{fill:#f1f5f9;stroke:#cbd5e1}.stream{fill:#fff;stroke:#0d9488;stroke-width:1.75;filter:url(#shadow)}.eyebrow{fill:#0d9488;font:700 14px ui-monospace,monospace;letter-spacing:1.6px}.heading{fill:#0f172a;font:700 34px ui-sans-serif,system-ui,sans-serif;letter-spacing:-.7px}.subtitle{fill:#64748b;font:400 17px ui-sans-serif,system-ui,sans-serif}.zone-label{fill:#0f766e;font:700 12px ui-monospace,monospace;letter-spacing:1.2px}.card-title{fill:#0f172a;font:700 18px ui-sans-serif,system-ui,sans-serif}.note{fill:#64748b;font:500 13px ui-sans-serif,system-ui,sans-serif}.mono{fill:#0f172a;font:600 15px ui-monospace,monospace}.fd{fill:#0f766e;font:700 22px ui-monospace,monospace}.input{fill:none;stroke:#64748b;stroke-width:2.5;stroke-linecap:round;marker-end:url(#arrow-muted)}.output{fill:none;stroke:#0d9488;stroke-width:2.5;stroke-linecap:round;marker-end:url(#arrow)}.label-bg{fill:#f8fafc}.flow-label{fill:#0f766e;font:700 12px ui-monospace,monospace;letter-spacing:.6px}
+  </style>
+  <rect class="canvas" width="960" height="600" rx="20"/>
+  <text class="eyebrow" x="56" y="58">STANDARD I/O · DEFAULT TERMINAL CONNECTIONS</text>
+  <text class="heading" x="56" y="104">Three Standard Streams</text>
+  <text class="subtitle" x="56" y="138">FD 0 receives input; FD 1 and FD 2 send output through independent channels.</text>
+  <line class="divider" x1="56" y1="168" x2="904" y2="168"/>
+
+  <rect class="terminal" x="64" y="216" width="264" height="286" rx="14"/>
+  <text class="zone-label" x="88" y="248">I/O TARGET</text>
+  <rect class="screen" x="88" y="270" width="216" height="164" rx="10"/>
+  <text class="mono" x="110" y="307">$ python main.py</text>
+  <text class="mono" x="110" y="342">input_</text>
+  <text class="mono" x="110" y="377">output</text>
+  <text class="mono" x="110" y="412">error</text>
+  <text class="card-title" x="196" y="470" text-anchor="middle">Terminal</text>
+  <text class="note" x="196" y="491" text-anchor="middle">Default connection target</text>
+
+  <rect class="process" x="568" y="200" width="328" height="318" rx="14"/>
+  <text class="zone-label" x="592" y="234">PYTHON PROCESS · FD TABLE</text>
+  <rect class="stream" x="600" y="258" width="264" height="64" rx="10"/>
+  <text class="fd" x="624" y="298">0</text><text class="card-title" x="668" y="292">stdin</text><text class="note" x="668" y="311">standard input</text>
+  <rect class="stream" x="600" y="350" width="264" height="64" rx="10"/>
+  <text class="fd" x="624" y="390">1</text><text class="card-title" x="668" y="384">stdout</text><text class="note" x="668" y="403">standard output</text>
+  <rect class="stream" x="600" y="442" width="264" height="64" rx="10"/>
+  <text class="fd" x="624" y="482">2</text><text class="card-title" x="668" y="476">stderr</text><text class="note" x="668" y="495">standard error</text>
+
+  <path class="input" d="M328 290H598"/>
+  <rect class="label-bg" x="414" y="274" width="96" height="24" rx="12"/><text class="flow-label" x="462" y="291" text-anchor="middle">INPUT</text>
+  <path class="output" d="M598 382H328"/>
+  <rect class="label-bg" x="408" y="366" width="108" height="24" rx="12"/><text class="flow-label" x="462" y="383" text-anchor="middle">OUTPUT</text>
+  <path class="output" d="M598 474H328"/>
+  <rect class="label-bg" x="412" y="458" width="100" height="24" rx="12"/><text class="flow-label" x="462" y="475" text-anchor="middle">ERROR</text>
+</svg>
