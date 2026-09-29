@@ -108,6 +108,14 @@
     pre {
       @apply focus-visible:outline-accent focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-dashed;
     }
+
+    .mermaid-diagram {
+      @apply my-8 overflow-x-auto text-center;
+
+      svg {
+        @apply mx-auto max-w-full;
+      }
+    }
   }
 
   /* ===== Code Blocks & Syntax Highlighting ===== */

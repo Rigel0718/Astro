@@ -29,7 +29,7 @@
 - 공유 대상은 WhatsApp, Facebook, X, Telegram, Pinterest, email이다.
 - 기본 OG 파일은 `public/default-og.jpg`다.
 
-`astro.config.ts`는 Astro 자체 구성을 담당한다. `site`는 AstroPaper 설정의 `https://Rigel0718.github.io`, `base`는 `/Astro`이며, 기본 locale `ko`에는 URL prefix를 붙이지 않는다. MDX와 sitemap integration, Tailwind Vite plugin, Google Sans Code font, Astro SVG optimizer가 설정되어 있다. Markdown은 TOC/collapse와 callout plugin을 거치며, Shiki light/dark theme와 filename·highlight·diff transformer를 사용한다.
+`astro.config.ts`는 Astro 자체 구성을 담당한다. `site`는 AstroPaper 설정의 `https://Rigel0718.github.io`, `base`는 `/Astro`이며, 기본 locale `ko`에는 URL prefix를 붙이지 않는다. MDX와 sitemap integration, Tailwind Vite plugin, Google Sans Code font, Astro SVG optimizer가 설정되어 있다. Markdown은 TOC/collapse와 callout plugin을 거치며, Shiki light/dark theme와 filename·highlight·diff transformer를 사용한다. 게시물의 `mermaid` 코드 블록은 `PostLayout.astro`에서 불러오는 Mermaid 스크립트가 SVG 다이어그램으로 변환하며, 사이트 테마와 View Transitions 탐색에 맞춰 다시 렌더링한다.
 
 `tsconfig.json`은 Astro strict preset을 사용하며 `@/*`를 `src/*`에, `@/astro-paper.config`를 root 설정 파일에 연결한다. ESLint는 Astro 권장 규칙과 TypeScript parser를 사용하고 `console` 호출을 오류로 취급한다.
 

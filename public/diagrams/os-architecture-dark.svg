@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 1120" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">System Architecture</title>
+  <desc id="diagram-desc">A three-layer operating system architecture. Python, a browser, and other applications run in user space and access process management, memory management, the file system, and device input and output in kernel space through the system call interface. The kernel manages CPU, RAM, storage, and network hardware.</desc>
+
+  <style>
+    /* Design tokens: keep future architecture diagrams visually consistent. */
+    /* Palette: canvas #0b1120, surface #1e293b, ink #e2e8f0,
+       muted #94a3b8, line #475569, accent #2dd4bf. */
+    .canvas { fill: #0b1120; }
+    .layer { fill: #111827; stroke: #475569; stroke-width: 1.5; }
+    .layer-kernel { fill: #132f31; stroke: #2dd4bf; stroke-width: 2; }
+    .card { fill: #1e293b; stroke: #475569; stroke-width: 1.5; }
+    .card-accent { fill: #1e293b; stroke: #14b8a6; stroke-width: 1.5; }
+    /* Typography: system sans for content; system mono for labels. */
+    .eyebrow { fill: #2dd4bf; font: 700 14px ui-monospace, monospace; letter-spacing: 1.6px; }
+    .title { fill: #e2e8f0; font: 700 34px ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.7px; }
+    .subtitle { fill: #94a3b8; font: 400 17px ui-sans-serif, system-ui, sans-serif; }
+    .layer-number { fill: #2dd4bf; font: 700 15px ui-monospace, monospace; letter-spacing: 1.5px; }
+    .layer-title { fill: #e2e8f0; font: 700 19px ui-sans-serif, system-ui, sans-serif; letter-spacing: 0.5px; }
+    .card-title { fill: #e2e8f0; font: 600 17px ui-sans-serif, system-ui, sans-serif; }
+    .card-note { fill: #94a3b8; font: 400 13px ui-sans-serif, system-ui, sans-serif; }
+    .badge { fill: #1e293b; stroke: #475569; stroke-width: 1; }
+    .badge-accent { fill: #134e4a; stroke: #2dd4bf; stroke-width: 1; }
+    .badge-text { fill: #94a3b8; font: 600 12px ui-monospace, monospace; letter-spacing: 0.5px; }
+    .badge-text-accent { fill: #5eead4; font: 700 12px ui-monospace, monospace; letter-spacing: 0.5px; }
+    .interface { fill: #1e293b; stroke: #2dd4bf; stroke-width: 1.5; }
+    .interface-text { fill: #5eead4; font: 700 13px ui-monospace, monospace; letter-spacing: 1.2px; }
+    .connector { fill: none; stroke: #2dd4bf; stroke-width: 2; stroke-linecap: round; }
+    .icon-line { fill: none; stroke: #2dd4bf; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .icon-fill { fill: #132f31; stroke: #2dd4bf; stroke-width: 2; }
+  </style>
+
+  <rect class="canvas" width="960" height="1120" rx="20" />
+
+  <!-- Header: 8 px spacing grid, 64 px outer margin. -->
+  <text class="eyebrow" x="64" y="70">ARCHITECTURE OVERVIEW</text>
+  <text class="title" x="64" y="118">System Architecture</text>
+  <text class="subtitle" x="64" y="151">Python application · Operating system · Hardware</text>
+  <line x1="64" y1="184" x2="896" y2="184" stroke="#475569" stroke-width="1" />
+
+  <!-- 01 / User space -->
+  <rect class="layer" x="64" y="216" width="832" height="248" rx="14" />
+  <text class="layer-number" x="96" y="258">01</text>
+  <text class="layer-title" x="136" y="258">USER SPACE</text>
+  <rect class="badge" x="754" y="236" width="110" height="32" rx="16" />
+  <circle cx="772" cy="252" r="4" fill="#2dd4bf" />
+  <text class="badge-text" x="784" y="256">Application</text>
+
+  <rect class="card" x="96" y="296" width="234" height="128" rx="10" />
+  <circle class="icon-fill" cx="125" cy="326" r="12" />
+  <path class="icon-line" d="M120 326l4 4 7-8" />
+  <text class="card-title" x="120" y="374">Python</text>
+  <text class="card-note" x="120" y="398">Application process</text>
+
+  <rect class="card" x="363" y="296" width="234" height="128" rx="10" />
+  <rect class="icon-fill" x="389" y="314" width="26" height="22" rx="4" />
+  <line class="icon-line" x1="389" y1="321" x2="415" y2="321" />
+  <circle cx="395" cy="318" r="1.5" fill="#2dd4bf" />
+  <text class="card-title" x="387" y="374">Browser</text>
+  <text class="card-note" x="387" y="398">User application</text>
+
+  <rect class="card" x="630" y="296" width="234" height="128" rx="10" />
+  <rect class="icon-fill" x="656" y="314" width="9" height="9" rx="2" />
+  <rect class="icon-fill" x="670" y="314" width="9" height="9" rx="2" />
+  <rect class="icon-fill" x="656" y="328" width="9" height="9" rx="2" />
+  <rect class="icon-fill" x="670" y="328" width="9" height="9" rx="2" />
+  <text class="card-title" x="654" y="374">Other Apps</text>
+  <text class="card-note" x="654" y="398">User applications</text>
+
+  <!-- System call boundary -->
+  <path class="connector" d="M480 464v26" />
+  <path d="M474 484l6 7 6-7" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <rect class="interface" x="350" y="500" width="260" height="40" rx="20" />
+  <text class="interface-text" x="480" y="525" text-anchor="middle">SYSTEM CALL INTERFACE</text>
+  <path class="connector" d="M480 540v26" />
+  <path d="M474 560l6 7 6-7" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- 02 / Kernel space -->
+  <rect class="layer-kernel" x="64" y="576" width="832" height="328" rx="14" />
+  <text class="layer-number" x="96" y="618">02</text>
+  <text class="layer-title" x="136" y="618">KERNEL SPACE</text>
+  <rect class="badge-accent" x="752" y="596" width="112" height="32" rx="16" />
+  <path class="icon-line" d="M769 608v5m-5 0h10v7h-10z" />
+  <text class="badge-text-accent" x="782" y="616">Privileged</text>
+
+  <rect class="card-accent" x="96" y="656" width="368" height="88" rx="10" />
+  <circle cx="126" cy="690" r="9" class="icon-fill" />
+  <path class="icon-line" d="M112 718c2-11 26-11 28 0M126 681v-5" />
+  <text class="card-title" x="158" y="694">Process Management</text>
+  <text class="card-note" x="158" y="718">Scheduling · lifecycle</text>
+
+  <rect class="card-accent" x="496" y="656" width="368" height="88" rx="10" />
+  <rect x="522" y="678" width="30" height="30" rx="4" class="icon-fill" />
+  <path class="icon-line" d="M530 674v-6m8 6v-6m8 6v-6m-16 44v6m8-6v6m8-6v6" />
+  <text class="card-title" x="576" y="694">Memory Management</text>
+  <text class="card-note" x="576" y="718">Allocation · protection</text>
+
+  <rect class="card-accent" x="96" y="768" width="368" height="88" rx="10" />
+  <path class="icon-fill" d="M112 795h14l5 6h21v24h-40z" />
+  <text class="card-title" x="158" y="806">File System</text>
+  <text class="card-note" x="158" y="830">Files · directories</text>
+
+  <rect class="card-accent" x="496" y="768" width="368" height="88" rx="10" />
+  <path class="icon-line" d="M523 797h28v24h-28zm7 0v-7h14v7m-7 24v8m-8 0h16" />
+  <text class="card-title" x="576" y="806">Device / I/O</text>
+  <text class="card-note" x="576" y="830">Drivers · input · output</text>
+
+  <!-- Kernel to hardware -->
+  <path class="connector" d="M480 904v34" />
+  <path d="M474 932l6 7 6-7" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- 03 / Hardware -->
+  <rect class="card" x="64" y="948" width="832" height="124" rx="14" />
+  <text class="layer-number" x="96" y="988">03</text>
+  <text class="layer-title" x="136" y="988">HARDWARE</text>
+
+  <g transform="translate(96 1008)">
+    <rect class="icon-fill" x="0" y="0" width="36" height="36" rx="6" />
+    <rect x="9" y="9" width="18" height="18" rx="3" fill="none" stroke="#2dd4bf" stroke-width="2" />
+    <path class="icon-line" d="M7 0v-6m11 6v-6m11 6v-6M7 36v6m11-6v6m11-6v6M0 7h-6m6 11h-6m6 11h-6m42-22h-6m6 11h-6m6 11h-6" />
+    <text class="badge-text-accent" x="18" y="22" text-anchor="middle">CPU</text>
+  </g>
+  <text class="card-title" x="168" y="1032">CPU · RAM · Storage · Network</text>
+  <text class="card-note" x="168" y="1056">Physical compute and I/O resources</text>
+</svg>
