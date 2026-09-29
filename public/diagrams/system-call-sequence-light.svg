@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 900" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">Python os.read system call sequence</title>
+  <desc id="diagram-desc">Python Program calls read with a file descriptor and byte count. Execution changes from User Mode to Kernel Mode, the Linux Kernel asks its File System subsystem to read the file, the File System returns data, and the kernel returns the result to Python before execution resumes in User Mode.</desc>
+
+  <defs>
+    <filter id="card-shadow" x="-15%" y="-20%" width="130%" height="150%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.08" />
+    </filter>
+    <marker id="request-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0d9488" />
+    </marker>
+    <marker id="return-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
+    </marker>
+  </defs>
+
+  <style>
+    .canvas { fill: #f8fafc; }
+    .divider { stroke: #cbd5e1; stroke-width: 1; }
+    .kernel-zone { fill: #f0fdfa; stroke: #99f6e4; stroke-width: 1.5; }
+    .card { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; filter: url(#card-shadow); }
+    .card-accent { fill: #ffffff; stroke: #0d9488; stroke-width: 1.75; filter: url(#card-shadow); }
+    .eyebrow { fill: #0d9488; font: 700 14px ui-monospace, monospace; letter-spacing: 1.6px; }
+    .title { fill: #0f172a; font: 700 34px ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.7px; }
+    .subtitle { fill: #64748b; font: 400 17px ui-sans-serif, system-ui, sans-serif; }
+    .participant { fill: #0f172a; font: 700 17px ui-sans-serif, system-ui, sans-serif; }
+    .participant-note { fill: #64748b; font: 500 13px ui-sans-serif, system-ui, sans-serif; }
+    .zone-label { fill: #0f766e; font: 700 12px ui-monospace, monospace; letter-spacing: 1.2px; }
+    .lifeline { stroke: #94a3b8; stroke-width: 1.5; stroke-dasharray: 6 7; }
+    .request { stroke: #0d9488; stroke-width: 2.5; marker-end: url(#request-arrow); }
+    .return { stroke: #64748b; stroke-width: 2.25; stroke-dasharray: 8 6; marker-end: url(#return-arrow); }
+    .call-label { fill: #0f172a; font: 600 15px ui-monospace, monospace; }
+    .flow-label { fill: #334155; font: 600 15px ui-sans-serif, system-ui, sans-serif; }
+    .mode-pill { fill: #ccfbf1; stroke: #0d9488; stroke-width: 1; }
+    .mode-text { fill: #0f766e; font: 700 13px ui-sans-serif, system-ui, sans-serif; }
+    .activation { fill: #5eead4; stroke: #0f766e; stroke-width: 1.5; }
+    .activation-label { fill: #0f766e; font: 700 11px ui-monospace, monospace; letter-spacing: 1px; }
+    .legend { fill: #64748b; font: 500 12px ui-sans-serif, system-ui, sans-serif; }
+  </style>
+
+  <rect class="canvas" width="960" height="900" rx="20" />
+
+  <text class="eyebrow" x="64" y="66">SYSTEM CALL SEQUENCE</text>
+  <text class="title" x="64" y="114">Python os.read()</text>
+  <text class="subtitle" x="64" y="148">User program → Linux kernel → file system → result</text>
+  <line class="divider" x1="64" y1="178" x2="896" y2="178" />
+
+  <!-- The shaded area makes File System's place inside the kernel explicit. -->
+  <rect class="kernel-zone" x="330" y="194" width="566" height="614" rx="14" />
+  <text class="zone-label" x="864" y="790" text-anchor="end">KERNEL SPACE · INTERNAL SUBSYSTEM</text>
+
+  <!-- Participant cards -->
+  <rect class="card" x="64" y="218" width="232" height="88" rx="10" />
+  <text class="participant" x="180" y="253" text-anchor="middle">Python Program</text>
+  <text class="participant-note" x="180" y="279" text-anchor="middle">User Mode</text>
+
+  <rect class="card-accent" x="364" y="218" width="232" height="88" rx="10" />
+  <text class="participant" x="480" y="253" text-anchor="middle">Linux Kernel</text>
+  <text class="participant-note" x="480" y="279" text-anchor="middle">Kernel Mode</text>
+
+  <rect class="card-accent" x="664" y="218" width="232" height="88" rx="10" />
+  <text class="participant" x="780" y="253" text-anchor="middle">File System</text>
+  <text class="participant-note" x="780" y="279" text-anchor="middle">Kernel subsystem</text>
+
+  <!-- Lifelines -->
+  <line class="lifeline" x1="180" y1="306" x2="180" y2="772" />
+  <line class="lifeline" x1="480" y1="306" x2="480" y2="772" />
+  <line class="lifeline" x1="780" y1="306" x2="780" y2="772" />
+
+  <!-- Request and mode transition -->
+  <text class="call-label" x="330" y="350" text-anchor="middle">read(fd, 100)</text>
+  <line class="request" x1="180" y1="370" x2="466" y2="370" />
+  <rect class="mode-pill" x="252" y="394" width="216" height="38" rx="19" />
+  <text class="mode-text" x="360" y="419" text-anchor="middle">User Mode → Kernel Mode</text>
+
+  <!-- Kernel activation spans all kernel-side work. -->
+  <rect class="activation" x="472" y="448" width="16" height="230" rx="6" />
+  <text class="activation-label" x="501" y="466">ACTIVE</text>
+
+  <text class="flow-label" x="630" y="500" text-anchor="middle">파일 읽기 처리</text>
+  <line class="request" x1="488" y1="520" x2="766" y2="520" />
+
+  <text class="flow-label" x="630" y="574" text-anchor="middle">데이터 반환</text>
+  <line class="return" x1="780" y1="594" x2="490" y2="594" />
+
+  <text class="flow-label" x="330" y="642" text-anchor="middle">결과 반환</text>
+  <line class="return" x1="472" y1="662" x2="182" y2="662" />
+
+  <rect class="mode-pill" x="252" y="700" width="216" height="38" rx="19" />
+  <text class="mode-text" x="360" y="725" text-anchor="middle">Kernel Mode → User Mode</text>
+
+  <!-- Legend -->
+  <line class="request" x1="64" y1="842" x2="116" y2="842" />
+  <text class="legend" x="130" y="846">요청</text>
+  <line class="return" x1="198" y1="842" x2="250" y2="842" />
+  <text class="legend" x="264" y="846">반환</text>
+</svg>
