@@ -33,6 +33,16 @@ export const POST_TOPICS = {
           "파이썬의 함수와 Method가 만들어지고 연결되는 과정을 순서대로 살펴보는 10개 에피소드 시리즈입니다.",
         episodeCount: 7,
       },
+
+      understandingOperatingSystemsWithPython: {
+        slug: "understanding-operating-systems-with-python",
+        title: "Python으로 이해하는 운영체제",
+        description:
+          "Python 프로그램은 운영체제 위에서 어떻게 실행되고 통신할까?\n프로세스와 시스템 호출, File Descriptor, Pipe 등 운영체제의 핵심 개념을 Python 실습으로 살펴보고, 이를 바탕으로 로컬 MCP 서버의 동작 원리까지 이해합니다.",
+        metaDescription:
+          "Python 실습으로 운영체제의 핵심 개념을 살펴보고, 로컬 MCP 서버의 실행과 통신 원리까지 이해하는 7개 에피소드 시리즈입니다.",
+        episodeCount: 7,
+      },
     },
   },
 } as const;
