@@ -23,6 +23,7 @@
 
 현재 주요 값은 다음과 같다.
 
+- 사이트 제목은 `Memo-rigel`이다.
 - 글 목록과 홈의 글 수는 각각 4개다.
 - light/dark mode, archive, back button, Pagefind search, 동적 OG 이미지가 활성화되어 있다.
 - edit-post 링크는 비활성화되어 있고 social profile 목록은 비어 있다.

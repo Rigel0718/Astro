@@ -3,7 +3,7 @@ import { defineAstroPaperConfig } from "./src/types/config";
 export default defineAstroPaperConfig({
   site: {
     url: "https://Rigel0718.github.io",
-    title: "AstroPaper",
+    title: "Memo-rigel",
     description: "Python, Backend, AI Agent에 대해 공부하고 기록하는 기술 블로그입니다.",
     author: "Shin",
     profile: "",
